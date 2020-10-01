@@ -1,4 +1,7 @@
 '''Provides functions to read data from S3 buckets and convert to classes.
+
+TODO
+- split_basket function isn't used yet
 '''
 import boto3
 import csv
@@ -47,7 +50,7 @@ def to_clean_transactions(raw_transactions):
 def split_basket(basket):
     '''Converts each (item, cost) pair in a string to a Basket object.'''
     baskets = []
-    for sale in basket.split(', '):
-        item, cost = sale.split(' - ')
+    for sale in basket.strip('"').split(', '):
+        item, cost = sale.rsplit(' - ', 1)
         baskets.append(Basket(item=item, cost=cost))
     return baskets
