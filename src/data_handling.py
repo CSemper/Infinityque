@@ -6,7 +6,7 @@ TODO
 import boto3
 import csv
 
-from classes import RawTransaction, Transaction, Basket
+from src.classes import RawTransaction, Transaction, Basket
 
 def find_last_csv_name(bucket):
     '''Finds last file-name in S3 bucket when sorted alphabetically.'''
