@@ -1,0 +1,16 @@
+service: greengrasserverless
+plugins:
+  - serverless-python-requirements
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+
+package:
+  individually: true
+
+functions:
+  redshift-lambda:
+    runtime: python3.8
+    handler: handler.start
+    module: redshift_lambda
