@@ -14,7 +14,7 @@ from classes import Transaction, Basket
 load_dotenv()
 
 def start(event, context):
-    print ("This is lambda version 1 million")
+    print ("This is the updated lambda")
     host = os.getenv("DB_HOST")
     port = int(os.getenv("DB_PORT"))
     user = os.getenv("DB_USER")
@@ -95,7 +95,7 @@ def start(event, context):
         
         with conn.cursor() as cursor:
             psycopg2.extras.execute_values(cursor, """
-                INSERT INTO basket_g3 VALUES %s;
+                INSERT INTO basket_g3 (transaction_id, item, cost) VALUES %s;
             """, [(
                 basket.trans_id,
                 basket.item,

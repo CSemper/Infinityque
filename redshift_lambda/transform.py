@@ -1,11 +1,11 @@
 from read import raw_transaction_list
 from classes import Raw_Transaction, Transaction, Raw_Basket, Basket
-from datetime import date
+# from datetime import date
 
-def get_date():
-    today = date.today()
-    d = today.strftime("%m/%d/%y")
-    return(d)
+# def get_date():
+#     today = date.today()
+#     d = today.strftime("%m/%d/%y")
+#     return(d)
     
 def clean_transactions(raw_transaction_list):
     '''Returns a list of clean transactions.'''
@@ -18,14 +18,13 @@ def clean_transactions(raw_transaction_list):
         day, month, year = f"{raw_date}".split('/')
         new_date = f"{month}-{day}-{year}"
         clean_date = f"{new_date} {raw_time}"
-        day = get_date()
         location = raw_transaction.location
         abbreviation = location[:4].upper() 
         customer_name = raw_transaction.customer_name
         first_name = customer_name.split()[0]
         total = float(raw_transaction.pay_amount)
         basket = raw_transaction.basket
-        identification = f"{day}-{abbreviation}-{id_number}"
+        identification = f"{new_date}-{abbreviation}-{id_number}"
         clean_transaction = Transaction(unique_id = identification, 
                                         date = clean_date, 
                                         location = location, 
@@ -59,16 +58,4 @@ def clean_basket_items(raw_basket_list):
                               cost = cost)
         clean_basket_list.append(basket_item)
     return clean_basket_list
-        
-       
-        
-  
-    #         yield raw_basket
-    # return raw_basket_list
-    
-    #       baskets = []
-    # for sale in basket.strip('"').split(', '):
-    #     item, cost = sale.rsplit(' - ', 1)
-    #     baskets.append(Basket(item=item, cost=cost))
-    # return baskets
         

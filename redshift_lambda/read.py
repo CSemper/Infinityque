@@ -23,10 +23,10 @@ def output_raw_transactions(csv_reader, skip_header=True):
     counter = 0
     for line in csv_reader:
         try:
-            identity = counter + 1
+            identity = counter
             raw_transaction = Raw_Transaction(line[0], line[1], line[2], line[3], line[4], line[5], line[6], identity)
             raw_transaction_list.append(raw_transaction)
-            counter+=1
+            counter = counter + 1
         except ValueError:
             print('Failed to read row:')
             print(line)
