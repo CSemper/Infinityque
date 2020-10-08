@@ -2,8 +2,6 @@ import boto3
 import csv
 from classes import Raw_Transaction
 
-raw_transaction_list = []
-
 def return_most_recent_file(bucket):
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(bucket)
@@ -18,6 +16,7 @@ def read_csv_file_from_s3(bucket, key):
     return csv.reader(data.splitlines())
 
 def output_raw_transactions(csv_reader, skip_header=True):
+    raw_transaction_list = []
     if skip_header:
         next(csv_reader)
     counter = 0
