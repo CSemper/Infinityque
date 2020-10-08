@@ -1,17 +1,20 @@
 import psycopg2
+import psycopg2.extras
 import sys
 import os
 
 import boto3
 from dotenv import load_dotenv
-from transform import clean_transaction_list, clean_transactions, update_raw_basket, raw_basket_list
-from transform import clean_basket_items, clean_basket_list, raw_transaction_list
+from transform import clean_transactions, update_raw_basket
+from transform import clean_basket_items, raw_transaction_list
 from read import return_most_recent_file, read_csv_file_from_s3, output_raw_transactions
+from read import create_sql_transactions_string, create_sql_basket_string
 from classes import Transaction, Basket
 
 load_dotenv()
 
 def start(event, context):
+    print ("This is lambda version 1 million")
     host = os.getenv("DB_HOST")
     port = int(os.getenv("DB_PORT"))
     user = os.getenv("DB_USER")
@@ -45,51 +48,58 @@ def start(event, context):
 
     print('connected')
 
+    # Read latest CSV File
     try: 
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(bucket)
+        files = (file.key for file in bucket.objects.all())
+        
         last_file = return_most_recent_file(bucket='cafe-transactions')
-        print ("Got last file name")
+        print(last_file)
         data = read_csv_file_from_s3(bucket='cafe-transactions', key=last_file)
-        print ("Read from CSV file")
-        output_raw_transactions(data)
-        print ("Updated raw transaction list")
+        print('Read data from csv')
+        raw_transactions = output_raw_transactions(data)
+        print('Read raw transactions')
     except Exception as ERROR:
         print ("Couldn't extract from S3 files")
         print (str(ERROR))
 
-    """Clean Transactions & Basket"""
+    # Clean Transactions & Basket
     try: 
-        clean_transactions()
-        print ("Clean_Transactions worked")
-        update_raw_basket()
-        print ("Update_raw_basket worked")
-        clean_basket_items()
-        print ("Clean_basket_items worked")
+        clean_transaction_list = clean_transactions(raw_transactions)
+        print('Clean transactions')
+        basket_list = update_raw_basket(clean_transaction_list)
+        print('Read baskets')
+        clean_basket_list = clean_basket_items(basket_list)
+        print('Clean baskets')
     except Exception as ERROR:
         print ("Couldn't transform S3 files")
         print (ERROR)
 
     """Write Transactions and Basket Items to Database"""
-    try:
-        for transaction in clean_transaction_list:
-            cursor = conn.cursor()
-            sql = "INSERT INTO transactions_g3 (unique_id, date, first_name, total) VALUES (%s ,%s, %s, %s)"
-            cursor.execute(sql, (transaction.unique_id, transaction.date, transaction.first_name, transaction.total))
-            cursor.close()
-            conn.commit()
-        print ("transactions entered into database")
-        for entry in clean_basket_list:
-            cursor = conn.cursor()
-            command = "INSERT INTO basket_g3 (transaction_id, item, cost) VALUES (%s, %s, %s)"
-            cursor.execute(command, (entry.trans_id, entry.item, entry.cost))
-            cursor.close()
-            conn.commit()
-        print ("basket items entered into database")
-    except Exception as ERROR:
-        print ("Couldn't load S3 files to Redshift Database")
-        print (str(ERROR))
-    finally:
-        conn.close()
-
+    with conn.cursor() as cursor:
+        psycopg2.extras.execute_values(cursor, """
+            INSERT INTO transactions_g3 VALUES %s;
+        """, [(
+            transaction.unique_id,
+            transaction.date,
+            transaction.first_name,
+            transaction.total,
+            transaction.location   
+        ) for transaction in clean_transaction_list])
+        conn.commit()
+    print ("Transactions written to database")
+    
+    with conn.cursor() as cursor:
+        psycopg2.extras.execute_values(cursor, """
+            INSERT INTO basket_g3 VALUES %s;
+        """, [(
+            basket.trans_id,
+            basket.item,
+            basket.cost  
+        ) for basket in clean_basket_list])
+        conn.commit()
+    print ("Basket Items written to database")
 
 # con = psycopg2.connect(
 #     "dbname=dev host=redshift-cluster-1.cduzkj2qjmlq.eu-west-2.redshift.amazonaws.com port=5439 user=test password=Password1")

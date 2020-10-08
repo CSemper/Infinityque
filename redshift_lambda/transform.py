@@ -2,16 +2,14 @@ from read import raw_transaction_list
 from classes import Raw_Transaction, Transaction, Raw_Basket, Basket
 from datetime import date
 
-clean_transaction_list = []
-raw_basket_list = []
-clean_basket_list =[]
-
 def get_date():
     today = date.today()
     d = today.strftime("%m/%d/%y")
     return(d)
     
-def clean_transactions():
+def clean_transactions(raw_transaction_list):
+    '''Returns a list of clean transactions.'''
+    clean_transaction_list = []
     for raw_transaction in raw_transaction_list:
         id_number = raw_transaction.id_number
         split_date_and_time= raw_transaction.date.split()
@@ -37,7 +35,9 @@ def clean_transactions():
         clean_transaction_list.append(clean_transaction)
     return clean_transaction_list
 
-def update_raw_basket():
+def update_raw_basket(clean_transaction_list):
+    '''Returns list of raw baskets.'''
+    raw_basket_list = []
     for transaction in clean_transaction_list:
         transaction_id = transaction.unique_id
         basket = transaction.basket.replace("\"", "")
@@ -47,7 +47,9 @@ def update_raw_basket():
             raw_basket_list.append(combined_basket)
     return raw_basket_list
           
-def clean_basket_items():
+def clean_basket_items(raw_basket_list):
+    '''Cleans list of raw baskets.'''
+    clean_basket_list = []
     for sale in raw_basket_list:
         identifier = sale.transaction_id
         order = sale.basket_items
