@@ -10,26 +10,24 @@ def clean_transactions(raw_transaction_list):
     '''Returns a list of clean transactions.'''
     clean_transaction_list = []
     for raw_transaction in raw_transaction_list:
-        id_number = raw_transaction.id_number
-        split_date_and_time= raw_transaction.date.split()
-        raw_date = split_date_and_time[0]
-        raw_time = split_date_and_time [1]
-        day, month, year = f"{raw_date}".split('/')
-        new_date = f"{month}-{day}-{year}"
-        clean_date = f"{new_date} {raw_time}"
-        location = raw_transaction.location
-        abbreviation = location[:4].upper() 
-        customer_name = raw_transaction.customer_name
-        first_name = customer_name.split()[0]
-        total = float(raw_transaction.pay_amount)
-        basket = raw_transaction.basket
-        identification = f"{new_date}-{abbreviation}-{id_number}"
-        clean_transaction = Transaction(unique_id = identification, 
-                                        date = clean_date, 
-                                        location = location, 
-                                        first_name= first_name, 
-                                        total= total,
-                                        basket = basket)
+        # Convert datetime to 'month-day-year hh:ss' format'
+        date, time = raw_transaction.date.split(maxsplit=1)
+        day, month, year = date.split('/')
+        clean_date = f'{month}-{day}-{year}'
+        # Create unique ID
+        abbreviated_location = raw_transaction.location[:4].upper()
+        id_string = f'{clean_date}-{abbreviated_location}-{raw_transaction.id_number}'
+        # Remove surname
+        name = raw_transaction.customer_name.split()[0]
+        # Create clean transaction and append to list
+        clean_transaction = Transaction(
+            unique_id=id_string,
+            date=f'{clean_date} {time}',
+            location=raw_transaction.location,
+            first_name=name,
+            total=float(raw_transaction.pay_amount),
+            basket=raw_transaction.basket
+        )
         clean_transaction_list.append(clean_transaction)
     return clean_transaction_list
 
