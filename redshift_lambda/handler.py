@@ -6,7 +6,7 @@ import psycopg2
 import psycopg2.extras
 from dotenv import load_dotenv
 
-from read import output_raw_transactions, read_csv_file_from_s3
+from read import get_file_name, output_raw_transactions, read_csv_file_from_s3
 from transform import clean_basket_items, clean_transactions, update_raw_basket
 
 load_dotenv()
@@ -46,58 +46,57 @@ def start(event, context):
 
     print('connected')
 
-    # Read latest CSV File
+    # Read raw csv data
     try: 
-        s3 = boto3.resource('s3')
-        bucket = s3.Bucket('cafe-transactions')
-        files = (file.key for file in bucket.objects.all())
+        file_name = get_file_name(bucket='cafe-transactions',
+                                  location='isle of wight',
+                                  date_string=None)
     except Exception as ERROR:
         print ("Couldn't extract from S3 files")
         print (str(ERROR))
-    for file_name in files:
-        print(file_name)
-        try:
-            data = read_csv_file_from_s3(bucket='cafe-transactions', key=file_name)
-            print('Read data from csv')
-            raw_transactions = output_raw_transactions(data)
-            print('Read raw transactions')
-        except Exception as ERROR:
-            print ("Couldn't extract from S3 files")
-            print (str(ERROR))
+    print(file_name)
+    try:
+        data = read_csv_file_from_s3(bucket='cafe-transactions', key=file_name)
+        print('Read data from csv')
+        raw_transactions = output_raw_transactions(data)
+        print('Read raw transactions')
+    except Exception as ERROR:
+        print ("Couldn't extract from S3 files")
+        print (str(ERROR))
 
-        # Clean Transactions & Basket
-        try: 
-            clean_transaction_list = clean_transactions(raw_transactions)
-            print('Clean transactions')
-            basket_list = update_raw_basket(clean_transaction_list)
-            print('Read baskets')
-            clean_basket_list = clean_basket_items(basket_list)
-            print('Clean baskets')
-        except Exception as ERROR:
-            print ("Couldn't transform S3 files")
-            print (ERROR)
-
-        """Write Transactions and Basket Items to Database"""
-        with conn.cursor() as cursor:
-            psycopg2.extras.execute_values(cursor, """
-                INSERT INTO transactions_g3 VALUES %s;
-            """, [(
-                transaction.unique_id,
-                transaction.date,
-                transaction.first_name,
-                transaction.total,
-                transaction.location   
-            ) for transaction in clean_transaction_list])
-            conn.commit()
-        print ("Transactions written to database")
-        
-        with conn.cursor() as cursor:
-            psycopg2.extras.execute_values(cursor, """
-                INSERT INTO basket_g3 (transaction_id, item, cost) VALUES %s;
-            """, [(
-                basket.trans_id,
-                basket.item,
-                basket.cost  
-            ) for basket in clean_basket_list])
-            conn.commit()
-        print ("Basket Items written to database")
+    # Clean Transactions & Basket data
+    try: 
+        clean_transaction_list = clean_transactions(raw_transactions)
+        print('Clean transactions')
+        basket_list = update_raw_basket(clean_transaction_list)
+        print('Read baskets')
+        clean_basket_list = clean_basket_items(basket_list)
+        print('Clean baskets')
+    except Exception as ERROR:
+        print ("Couldn't transform S3 files")
+        print (ERROR)
+    
+    # Write transactions and basket to database
+    with conn.cursor() as cursor:
+        psycopg2.extras.execute_values(cursor, """
+            INSERT INTO transactions_g3 VALUES %s;
+        """, [(
+            transaction.unique_id,
+            transaction.date,
+            transaction.first_name,
+            transaction.total,
+            transaction.location   
+        ) for transaction in clean_transaction_list])
+        conn.commit()
+    print ("Transactions written to database")
+    
+    with conn.cursor() as cursor:
+        psycopg2.extras.execute_values(cursor, """
+            INSERT INTO basket_g3 (transaction_id, item, cost) VALUES %s;
+        """, [(
+            basket.trans_id,
+            basket.item,
+            basket.cost  
+        ) for basket in clean_basket_list])
+        conn.commit()
+    print ("Basket Items written to database")

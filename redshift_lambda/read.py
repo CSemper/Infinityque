@@ -1,12 +1,26 @@
-import boto3
 import csv
+from datetime import date
+
+import boto3
+
 from classes import Raw_Transaction
 
-def return_most_recent_file(bucket):
+
+def get_file_name(bucket, location, date_string=None):
+    '''Returns csv file name for a given location and date.'''
+    # List all files in bucket
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(bucket)
-    files = (file.key for file in bucket.objects.all())
-    return min(files)
+    all_files = (file.key for file in bucket.objects.all())
+    # If no date given, use today's date
+    if date_string is None:
+        date_string = date.today().strftime('%d-%m-%y')
+    # Return file starting with `location` and `date`
+    location = location.replace(' ', '_').lower()
+    file_name_start = f'{location}_{date_string}'
+    for file_name in all_files:
+        if file_name.startswith(file_name_start):
+            return file_name
 
 def read_csv_file_from_s3(bucket, key):
     s3 = boto3.client('s3')
