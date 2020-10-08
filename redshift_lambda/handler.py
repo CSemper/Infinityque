@@ -51,55 +51,55 @@ def start(event, context):
     # Read latest CSV File
     try: 
         s3 = boto3.resource('s3')
-        bucket = s3.Bucket(bucket)
+        bucket = s3.Bucket('cafe-transactions')
         files = (file.key for file in bucket.objects.all())
-        
-        last_file = return_most_recent_file(bucket='cafe-transactions')
-        print(last_file)
-        data = read_csv_file_from_s3(bucket='cafe-transactions', key=last_file)
-        print('Read data from csv')
-        raw_transactions = output_raw_transactions(data)
-        print('Read raw transactions')
     except Exception as ERROR:
         print ("Couldn't extract from S3 files")
         print (str(ERROR))
+    for file_name in files:
+        print(file_name)
+        try:
+            data = read_csv_file_from_s3(bucket='cafe-transactions', key=file_name)
+            print('Read data from csv')
+            raw_transactions = output_raw_transactions(data)
+            print('Read raw transactions')
+        except Exception as ERROR:
+            print ("Couldn't extract from S3 files")
+            print (str(ERROR))
 
-    # Clean Transactions & Basket
-    try: 
-        clean_transaction_list = clean_transactions(raw_transactions)
-        print('Clean transactions')
-        basket_list = update_raw_basket(clean_transaction_list)
-        print('Read baskets')
-        clean_basket_list = clean_basket_items(basket_list)
-        print('Clean baskets')
-    except Exception as ERROR:
-        print ("Couldn't transform S3 files")
-        print (ERROR)
+        # Clean Transactions & Basket
+        try: 
+            clean_transaction_list = clean_transactions(raw_transactions)
+            print('Clean transactions')
+            basket_list = update_raw_basket(clean_transaction_list)
+            print('Read baskets')
+            clean_basket_list = clean_basket_items(basket_list)
+            print('Clean baskets')
+        except Exception as ERROR:
+            print ("Couldn't transform S3 files")
+            print (ERROR)
 
-    """Write Transactions and Basket Items to Database"""
-    with conn.cursor() as cursor:
-        psycopg2.extras.execute_values(cursor, """
-            INSERT INTO transactions_g3 VALUES %s;
-        """, [(
-            transaction.unique_id,
-            transaction.date,
-            transaction.first_name,
-            transaction.total,
-            transaction.location   
-        ) for transaction in clean_transaction_list])
-        conn.commit()
-    print ("Transactions written to database")
-    
-    with conn.cursor() as cursor:
-        psycopg2.extras.execute_values(cursor, """
-            INSERT INTO basket_g3 VALUES %s;
-        """, [(
-            basket.trans_id,
-            basket.item,
-            basket.cost  
-        ) for basket in clean_basket_list])
-        conn.commit()
-    print ("Basket Items written to database")
-
-# con = psycopg2.connect(
-#     "dbname=dev host=redshift-cluster-1.cduzkj2qjmlq.eu-west-2.redshift.amazonaws.com port=5439 user=test password=Password1")
+        """Write Transactions and Basket Items to Database"""
+        with conn.cursor() as cursor:
+            psycopg2.extras.execute_values(cursor, """
+                INSERT INTO transactions_g3 VALUES %s;
+            """, [(
+                transaction.unique_id,
+                transaction.date,
+                transaction.first_name,
+                transaction.total,
+                transaction.location   
+            ) for transaction in clean_transaction_list])
+            conn.commit()
+        print ("Transactions written to database")
+        
+        with conn.cursor() as cursor:
+            psycopg2.extras.execute_values(cursor, """
+                INSERT INTO basket_g3 VALUES %s;
+            """, [(
+                basket.trans_id,
+                basket.item,
+                basket.cost  
+            ) for basket in clean_basket_list])
+            conn.commit()
+        print ("Basket Items written to database")
