@@ -1,4 +1,3 @@
-from read import raw_transaction_list
 from classes import Raw_Transaction, Transaction, Raw_Basket, Basket
 # from datetime import date
 
