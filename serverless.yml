@@ -1,4 +1,4 @@
-service: greengrasserverless
+service: group-3
 plugins:
   - serverless-python-requirements
 provider:
