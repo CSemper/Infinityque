@@ -1,3 +1,4 @@
+
 service: group-3
 
 provider:
@@ -18,12 +19,30 @@ functions:
     module: extract
     include: 
       - extract
+
+  group3-transform:
+    handler: handler.start
+    module: transform
+    include: 
+      - transform
     events:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
 
-  # group3-transform:
-  # group3-load:
+  group3-load:
+    handler: handler.start
+    module: load
+    include: 
+      - load
+    events:
+      - sqs:
+          arn: !GetAtt Group3SQSTransormtoLoad.Arn
+
+  redshift-lambda:
+    runtime: python3.8
+    handler: handler.start
+    module: redshift_lambda
+
 
 resources:
   Resources:
@@ -34,9 +53,3 @@ resources:
 
 plugins:
   - serverless-python-requirements
-
-# functions:
-#   redshift-lambda:
-#     runtime: python3.8
-#     handler: handler.start
-#     module: redshift_lambda
