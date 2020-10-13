@@ -1,26 +1,27 @@
 import csv
-from datetime import date
+import datetime
 
 import boto3
 
-from classes import Raw_Transaction
+from raw_class import Raw_Transaction
 
-
-def get_file_name(bucket, location, date_string=None):
+def get_key_prefix():
+     today = datetime.date.today()
+     yesterday = today - datetime.timedelta(days=1)
+     key_prefix = yesterday.strftime("%Y/%m/%d") 
+     return(key_prefix) 
+ 
+def get_file_name():
     '''Returns csv file name for a given location and date.'''
     # List all files in bucket
     s3 = boto3.resource('s3')
-    bucket = s3.Bucket(bucket)
+    bucket = s3.Bucket("group3-testbucket")
     all_files = (file.key for file in bucket.objects.all())
-    # If no date given, use today's date
-    if date_string is None:
-        date_string = date.today().strftime('%d-%m-%y')
-    # Return file starting with `location` and `date`
-    location = location.replace(' ', '_').lower()
-    file_name_start = f'{location}_{date_string}'
+    file_name_start = get_key_prefix()
     for file_name in all_files:
         if file_name.startswith(file_name_start):
             return file_name
+
 
 def read_csv_file_from_s3(bucket, key):
     s3 = boto3.client('s3')
