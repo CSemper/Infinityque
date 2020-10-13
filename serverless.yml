@@ -12,7 +12,7 @@ functions:
     module: extract
     events:
       - sqs:
-          arn: !GetAtt Group3-SQS-ExtracttoTransform.Arn
+          arn: !GetAtt Group3SQSExtracttoTransform.Arn
       
 resources:
   Resources:
