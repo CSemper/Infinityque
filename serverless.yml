@@ -48,23 +48,23 @@ functions:
       - sqs:
           arn: !GetAtt Group3SQSTransformtoLoad.Arn
 
-  redshift-lambda:
-    runtime: python3.8
-    handler: handler.start
-    module: redshift_lambda
+#   redshift-lambda:
+#     runtime: python3.8
+#     handler: handler.start
+#     module: redshift_lambda
 
 
-resources:
-  Resources:
-    Group3SQSExtracttoTransform:
-      Type: "AWS::SQS::Queue"
-      Properties:
-        QueueName: "Group3SQSExtracttoTransform"
+# resources:
+#   Resources:
+#     Group3SQSExtracttoTransform:
+#       Type: "AWS::SQS::Queue"
+#       Properties:
+#         QueueName: "Group3SQSExtracttoTransform"
       
-    Group3SQSTransformtoLoad:
-      Type: "AWS::SQS::Queue"
-      Properties:
-        QueueName: "Group3SQSTransformtoLoad"
+#     Group3SQSTransformtoLoad:
+#       Type: "AWS::SQS::Queue"
+#       Properties:
+#         QueueName: "Group3SQSTransformtoLoad"
 
 plugins:
   - serverless-python-requirements
