@@ -11,7 +11,8 @@ functions:
     handler: handler.start
     module: extract
     events:
-      - sqs: !GetAtt Group3-SQS-ExtracttoTransform.Arn
+      - sqs:
+          arn: !GetAtt Group3-SQS-ExtracttoTransform.Arn
       
 resources:
   Resources:
