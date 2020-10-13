@@ -1,16 +1,40 @@
-service: group-3
-plugins:
-  - serverless-python-requirements
+service: sqs
+
 provider:
   name: aws
   stage: dev
   region: eu-west-1
-
-package:
-  individually: true
+  runtime: python3.8
 
 functions:
-  redshift-lambda:
-    runtime: python3.8
-    handler: handler.start
-    module: redshift_lambda
+  hello:
+    handler: handler.hello
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - Group3SQS1
+              - Arn
+resources:
+  Resources:
+    MyQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3SQS1"
+
+# service: group-3
+# plugins:
+#   - serverless-python-requirements
+# provider:
+#   name: aws
+#   stage: dev
+#   region: eu-west-1
+
+# package:
+#   individually: true
+
+# functions:
+#   redshift-lambda:
+#     runtime: python3.8
+#     handler: handler.start
+#     module: redshift_lambda
