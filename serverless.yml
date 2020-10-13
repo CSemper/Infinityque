@@ -10,7 +10,7 @@ functions:
   hello:
     handler: handler.hello
     events:
-      - sqs: !GetAtt Group3SQS1.Arn
+      - sqs: !GetAtt MyQueue.Arn
       
 resources:
   Resources:
