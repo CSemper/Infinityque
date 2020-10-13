@@ -54,17 +54,17 @@ functions:
 #     module: redshift_lambda
 
 
-# resources:
-#   Resources:
-#     Group3SQSExtracttoTransform:
-#       Type: "AWS::SQS::Queue"
-#       Properties:
-#         QueueName: "Group3SQSExtracttoTransform"
-      
-#     Group3SQSTransformtoLoad:
-#       Type: "AWS::SQS::Queue"
-#       Properties:
-#         QueueName: "Group3SQSTransformtoLoad"
+resources:
+  Resources:
+    Group3SQSExtracttoTransform:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3SQSExtracttoTransform"
+
+    Group3SQSTransformtoLoad:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3SQSTransformtoLoad"
 
 plugins:
   - serverless-python-requirements
