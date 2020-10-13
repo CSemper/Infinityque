@@ -10,11 +10,8 @@ functions:
   hello:
     handler: handler.hello
     events:
-      - sqs:
-          arn:
-            Fn::GetAtt:
-              - Group3SQS1
-              - Arn
+      - sqs: !GetAtt Group3SQS1.Arn
+      
 resources:
   Resources:
     MyQueue:
