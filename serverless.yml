@@ -1,4 +1,4 @@
-service: sqs
+service: group-3
 
 provider:
   name: aws
@@ -6,14 +6,25 @@ provider:
   region: eu-west-1
   runtime: python3.8
 
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+    - local_*
+
 functions:
   group3-extract:
     handler: handler.start
     module: extract
+    include: 
+      - extract
     events:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
-      
+
+  # group3-transform:
+  # group3-load:
+
 resources:
   Resources:
     Group3SQSExtracttoTransform:
@@ -21,16 +32,8 @@ resources:
       Properties:
         QueueName: "Group3SQSExtracttoTransform"
 
-# service: group-3
-# plugins:
-#   - serverless-python-requirements
-# provider:
-#   name: aws
-#   stage: dev
-#   region: eu-west-1
-
-# package:
-#   individually: true
+plugins:
+  - serverless-python-requirements
 
 # functions:
 #   redshift-lambda:
