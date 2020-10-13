@@ -22,6 +22,11 @@ functions:
 
   group3-transform:
     handler: handler.start
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+        - sqs:ReceiveMessage
+        Resource: !GetAtt Group3SQSExtracttoTransform.Arn
     module: transform
     include: 
       - transform
@@ -31,6 +36,11 @@ functions:
 
   group3-load:
     handler: handler.start
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action: 
+        - sqs: SendMessage
+        Resource: !GetAtt Group3SQSTransormtoLoad.Arn
     module: load
     include: 
       - load
