@@ -10,14 +10,14 @@ functions:
   hello:
     handler: handler.hello
     events:
-      - sqs: !GetAtt MyQueue.Arn
+      - sqs: !GetAtt Group3-SQS-ExtracttoTransform.Arn
       
 resources:
   Resources:
-    MyQueue:
+    Group3-SQS-ExtracttoTransform:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "Group3SQS1"
+        QueueName: "Group3-SQS-ExtracttoTransform"
 
 # service: group-3
 # plugins:
