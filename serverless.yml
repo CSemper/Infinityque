@@ -16,10 +16,10 @@ functions:
       
 resources:
   Resources:
-    Group3-SQS-ExtracttoTransform:
+    Group3SQSExtracttoTransform:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "Group3-SQS-ExtracttoTransform"
+        QueueName: "Group3SQSExtracttoTransform"
 
 # service: group-3
 # plugins:
