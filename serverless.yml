@@ -10,15 +10,15 @@ functions:
   group3-extract:
     handler: handler.start
     module: extract
-#     events:
-#       - sqs: !GetAtt Group3-SQS-ExtracttoTransform.Arn
+    events:
+      - sqs: !GetAtt Group3-SQS-ExtracttoTransform.Arn
       
-# resources:
-#   Resources:
-#     Group3-SQS-ExtracttoTransform:
-#       Type: "AWS::SQS::Queue"
-#       Properties:
-#         QueueName: "Group3-SQS-ExtracttoTransform"
+resources:
+  Resources:
+    Group3-SQS-ExtracttoTransform:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3-SQS-ExtracttoTransform"
 
 # service: group-3
 # plugins:
