@@ -40,13 +40,13 @@ functions:
       - Effect: "Allow"
         Action: 
         - sqs: SendMessage
-        Resource: !GetAtt Group3SQSTransormtoLoad.Arn
+        Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     module: load
     include: 
       - load
     events:
       - sqs:
-          arn: !GetAtt Group3SQSTransormtoLoad.Arn
+          arn: !GetAtt Group3SQSTransformtoLoad.Arn
 
   redshift-lambda:
     runtime: python3.8
@@ -60,6 +60,11 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSExtracttoTransform"
+      
+    Group3SQSTransormtoLoad:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3SQSTransormtoLoad"
 
 plugins:
   - serverless-python-requirements
