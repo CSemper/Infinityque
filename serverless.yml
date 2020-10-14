@@ -12,19 +12,22 @@ provider:
     - sqs:SendMessage
     - s3:Get*
     - s3:List*
-    Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
+    Resource: !GetAtt group-3-extract.Arn
+    # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
   - Effect: Allow
     Action:
     - sqs:ReceiveMessage
     - sqs:DeleteMessage
     - sqs:SendMessage
-    Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
+    Resource: !GetAtt group-3-transform.Arn
+    # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
   - Effect: Allow
     Action: 
     - sqs:ReceiveMessage
     - sqs:SendMessage
     - redshift:*
-    Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
+    Resource: !GetAtt group-3-load.Arn
+    # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
   - Effect: Allow
     Action: 
     - lambda:CreateEventSourceMapping
@@ -41,7 +44,6 @@ provider:
     Resource: !GetAtt Group3SQSTransformtoLoad.Arn
 
 
-
 package:
   individually: true
   exclude:
@@ -49,31 +51,14 @@ package:
     - local_*
 
 functions:
-  group3-extract:
+  extract:
     handler: handler.start
-    # iamRoleStatements:
-    #   - Effect: "Allow"
-    #     Action:
-    #     - 'sqs:SendMessage'
-    #     - 's3:Get*'
-    #     - 's3:List*'
-    #     Resource: !GetAtt group3-testbucket.Arn
     module: extract
     include: 
       - extract
-    # events:
-    #   - cloudwatch:
-    #       arn: !GetAtt #Add here (CloudwatchName).Arn
 
-  group3-transform:
+  transform:
     handler: handler.start
-    # iamRoleStatements:
-    #   - Effect: "Allow"
-    #     Action:
-    #     - 'sqs:ReceiveMessage'
-    #     - 'sqs:DeleteMessage'
-    #     - 'sqs:SendMessage'
-    #     Resource: !GetAtt Group3SQSExtracttoTransform.Arn
     module: transform
     include: 
       - transform
@@ -81,15 +66,8 @@ functions:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
 
-  group3-load:
+  load:
     handler: handler.start
-    # iamRoleStatements:
-    #   - Effect: "Allow"
-    #     Action: 
-    #     - 'sqs:ReceiveMessage'
-    #     - 'sqs:SendMessage'
-    #     - 'redshift:*'
-    #     Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     module: load
     include: 
       - load
@@ -98,37 +76,17 @@ functions:
       - sqs:
           arn: !GetAtt Group3SQSTransformtoLoad.Arn
 
-#   redshift-lambda:
-#     runtime: python3.8
-#     handler: handler.start
-#     module: redshift_lambda
-
-
 resources:
   Resources:
     Group3SQSExtracttoTransform:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSExtracttoTransform"
-      # iamRoleStatements:
-      #   - Effect: "Allow"
-      #     Action: 
-      #     - 'lambda:CreateEventSourceMapping'
-      #     - 'lambda:ListEventSourceMappings'
-      #     - 'lambda:ListFunctions'
-      #     Resource: !GetAtt group-3-dev-group3-transform.Arn
 
     Group3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSTransformtoLoad"
-      # iamRoleStatements:
-      #   - Effect: "Allow"
-      #     Action: 
-      #     - 'lambda:CreateEventSourceMapping'
-      #     - 'lambda:ListEventSourceMappings'
-      #     - 'lambda:ListFunctions'
-      #     Resource: !GetAtt group-3-dev-group3-load.Arn
 
 plugins:
   - serverless-python-requirements
