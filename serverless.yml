@@ -15,27 +15,29 @@ provider:
     Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
   - Effect: Allow
     Action:
-    - 'sqs:ReceiveMessage'
-    - 'sqs:DeleteMessage'
-    - 'sqs:SendMessage'
+    - sqs:ReceiveMessage
+    - sqs:DeleteMessage
+    - sqs:SendMessage
     Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
-  - Effect: "Allow"
+  - Effect: Allow
     Action: 
-    - 'sqs:ReceiveMessage'
-    - 'sqs:SendMessage'
-    - 'redshift:*'
+    - sqs:ReceiveMessage
+    - sqs:SendMessage
+    - redshift:*
     Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
-  - Effect: "Allow"
+  - Effect: Allow
     Action: 
-    - 'lambda:CreateEventSourceMapping'
-    - 'lambda:ListEventSourceMappings'
-    - 'lambda:ListFunctions'
+    - lambda:CreateEventSourceMapping
+    - lambda:ListEventSourceMappings
+    - lambda:ListFunctions
+    - sqs:*
     Resource: !GetAtt Group3SQSExtracttoTransform.Arn
-  - Effect: "Allow"
+  - Effect: Allow
     Action: 
-    - 'lambda:CreateEventSourceMapping'
-    - 'lambda:ListEventSourceMappings'
-    - 'lambda:ListFunctions'
+    - lambda:CreateEventSourceMapping
+    - lambda:ListEventSourceMappings
+    - lambda:ListFunctions
+    - sqs:*
     Resource: !GetAtt Group3SQSTransformtoLoad.Arn
 
 
