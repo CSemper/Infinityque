@@ -26,6 +26,7 @@ functions:
       - Effect: "Allow"
         Action:
         - sqs:ReceiveMessage
+        - sqs:SendMessage
         Resource: !GetAtt Group3SQSExtracttoTransform.Arn
     module: transform
     include: 
@@ -39,11 +40,13 @@ functions:
     iamRoleStatements:
       - Effect: "Allow"
         Action: 
-        - sqs: SendMessage
+        - sqs:ReceiveMessage
+        - sqs:SendMessage
         Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     module: load
     include: 
       - load
+      - psycopg2
     events:
       - sqs:
           arn: !GetAtt Group3SQSTransformtoLoad.Arn
