@@ -87,6 +87,21 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSTransformtoLoad"
+    
+    group-3-dev-extract:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        FunctionName: "group-3-dev-extract"
+    
+    group-3-dev-transform:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        FunctionName: "group-3-dev-transform"
+    
+    group-3-dev-load:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        FunctionName: "group-3-dev-load"
 
 plugins:
   - serverless-python-requirements
