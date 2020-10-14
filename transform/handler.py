@@ -1,3 +1,4 @@
+
 '''UNFINISHED!!! Clean data from SQS and send to SQS
 
 1. Receive a JSON list of raw transactions from SQS
@@ -34,3 +35,4 @@ def start(event, context):
         'transactions': clean_transaction_list,
         'baskets': basket_list
     })
+
