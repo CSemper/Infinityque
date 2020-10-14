@@ -1,26 +1,25 @@
 import csv
-from datetime import date
+import datetime
 
 import boto3
 
-from classes import Raw_Transaction
-
-
-def get_file_name(bucket, location, date_string=None):
-    '''Returns csv file name for a given location and date.'''
+def get_key_prefix():
+     today = datetime.date.today()
+     yesterday = today - datetime.timedelta(days=1)
+     key_prefix = yesterday.strftime("%Y/%m/%d") 
+     return(key_prefix) 
+ 
+def get_file_names():
+    '''Yield all files in bucket that start with today's date.'''
     # List all files in bucket
     s3 = boto3.resource('s3')
-    bucket = s3.Bucket(bucket)
+    bucket = s3.Bucket("group3-testbucket")
     all_files = (file.key for file in bucket.objects.all())
-    # If no date given, use today's date
-    if date_string is None:
-        date_string = date.today().strftime('%d-%m-%y')
-    # Return file starting with `location` and `date`
-    location = location.replace(' ', '_').lower()
-    file_name_start = f'{location}_{date_string}'
+    file_name_start = get_key_prefix()
     for file_name in all_files:
         if file_name.startswith(file_name_start):
-            return file_name
+            yield file_name
+
 
 def read_csv_file_from_s3(bucket, key):
     s3 = boto3.client('s3')
@@ -30,16 +29,25 @@ def read_csv_file_from_s3(bucket, key):
     return csv.reader(data.splitlines())
 
 def output_raw_transactions(csv_reader, skip_header=True):
+    '''Convert csv reader into a list of dictinaries'''
     raw_transaction_list = []
     if skip_header:
         next(csv_reader)
     counter = 0
     for line in csv_reader:
         try:
-            identity = counter
-            raw_transaction = Raw_Transaction(line[0], line[1], line[2], line[3], line[4], line[5], line[6], identity)
+            raw_transaction = {
+                'date': line[0],
+                'location': line[1],
+                'customer_name': line[2],
+                'basket': line[3],
+                'pay_amount': line[4],
+                'payment_method': line[5],
+                'ccn': line[6],
+                'id_number': counter
+            }
             raw_transaction_list.append(raw_transaction)
-            counter = counter + 1
+            counter += 1
         except ValueError:
             print('Failed to read row:')
             print(line)
