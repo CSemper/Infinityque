@@ -6,42 +6,42 @@ provider:
   stage: dev
   region: eu-west-1
   runtime: python3.8
-  iamRoleStatements:
-  - Effect: Allow
-    Action:
-    - sqs:SendMessage
-    - s3:Get*
-    - s3:List*
-    Resource: !GetAtt group-3-extract.Arn
-    # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
-  - Effect: Allow
-    Action:
-    - sqs:ReceiveMessage
-    - sqs:DeleteMessage
-    - sqs:SendMessage
-    Resource: !GetAtt group-3-transform.Arn
-    # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
-  - Effect: Allow
-    Action: 
-    - sqs:ReceiveMessage
-    - sqs:SendMessage
-    - redshift:*
-    Resource: !GetAtt group-3-load.Arn
-    # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
-  - Effect: Allow
-    Action: 
-    - lambda:CreateEventSourceMapping
-    - lambda:ListEventSourceMappings
-    - lambda:ListFunctions
-    - sqs:*
-    Resource: !GetAtt Group3SQSExtracttoTransform.Arn
-  - Effect: Allow
-    Action: 
-    - lambda:CreateEventSourceMapping
-    - lambda:ListEventSourceMappings
-    - lambda:ListFunctions
-    - sqs:*
-    Resource: !GetAtt Group3SQSTransformtoLoad.Arn
+  # iamRoleStatements:
+  # - Effect: Allow
+  #   Action:
+  #   - sqs:SendMessage
+  #   - s3:Get*
+  #   - s3:List*
+  #   Resource: !GetAtt group-3-extract.Arn
+  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
+  # - Effect: Allow
+  #   Action:
+  #   - sqs:ReceiveMessage
+  #   - sqs:DeleteMessage
+  #   - sqs:SendMessage
+  #   Resource: !GetAtt group-3-transform.Arn
+  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
+  # - Effect: Allow
+  #   Action: 
+  #   - sqs:ReceiveMessage
+  #   - sqs:SendMessage
+  #   - redshift:*
+  #   Resource: !GetAtt group-3-load.Arn
+  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
+  # - Effect: Allow
+  #   Action: 
+  #   - lambda:CreateEventSourceMapping
+  #   - lambda:ListEventSourceMappings
+  #   - lambda:ListFunctions
+  #   - sqs:*
+  #   Resource: !GetAtt Group3SQSExtracttoTransform.Arn
+  # - Effect: Allow
+  #   Action: 
+  #   - lambda:CreateEventSourceMapping
+  #   - lambda:ListEventSourceMappings
+  #   - lambda:ListFunctions
+  #   - sqs:*
+  #   Resource: !GetAtt Group3SQSTransformtoLoad.Arn
 
 
 package:
@@ -76,32 +76,31 @@ functions:
       - sqs:
           arn: !GetAtt Group3SQSTransformtoLoad.Arn
 
-resources:
-  Resources:
-    Group3SQSExtracttoTransform:
-      Type: "AWS::SQS::Queue"
-      Properties:
-        QueueName: "Group3SQSExtracttoTransform"
+Resources:
+  Group3SQSExtracttoTransform:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "Group3SQSExtracttoTransform"
 
-    Group3SQSTransformtoLoad:
-      Type: "AWS::SQS::Queue"
-      Properties:
-        QueueName: "Group3SQSTransformtoLoad"
-    
-    group-3-dev-extract:
-      Type: "AWS::Lambda::Function"
-      Properties:
-        FunctionName: "group-3-dev-extract"
-    
-    group-3-dev-transform:
-      Type: "AWS::Lambda::Function"
-      Properties:
-        FunctionName: "group-3-dev-transform"
-    
-    group-3-dev-load:
-      Type: "AWS::Lambda::Function"
-      Properties:
-        FunctionName: "group-3-dev-load"
+  Group3SQSTransformtoLoad:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "Group3SQSTransformtoLoad"
+  
+  group-3-dev-extract:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: "group-3-dev-extract"
+  
+  group-3-dev-transform:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: "group-3-dev-transform"
+  
+  group-3-dev-load:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: "group-3-dev-load"
 
 plugins:
   - serverless-python-requirements
