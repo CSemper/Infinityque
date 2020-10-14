@@ -16,9 +16,19 @@ package:
 functions:
   group3-extract:
     handler: handler.start
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+        - sqs:SendMessage
+        - s3:Get*
+        - s3:List*
+        Resource: !GetAtt group3-testbucket.Arn
     module: extract
     include: 
       - extract
+    # events:
+    #   - cloudwatch:
+    #       arn: !GetAtt #Add here (CloudwatchName).Arn
 
   group3-transform:
     handler: handler.start
@@ -26,6 +36,7 @@ functions:
       - Effect: "Allow"
         Action:
         - sqs:ReceiveMessage
+        - sqs:DeleteMessage
         - sqs:SendMessage
         Resource: !GetAtt Group3SQSExtracttoTransform.Arn
     module: transform
@@ -42,6 +53,7 @@ functions:
         Action: 
         - sqs:ReceiveMessage
         - sqs:SendMessage
+        - redshift:*
         Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     module: load
     include: 
@@ -63,11 +75,23 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSExtracttoTransform"
+      iamRoleStatements:
+        - Effect: "Allow"
+          Action: 
+          - lambda:CreateEventSourceMapping
+          - lambda:ListEventSourceMappings
+          - lambda:ListFunctions
 
     Group3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSTransformtoLoad"
+      iamRoleStatements:
+        - Effect: "Allow"
+          Action: 
+          - lambda:CreateEventSourceMapping
+          - lambda:ListEventSourceMappings
+          - lambda:ListFunctions
 
 plugins:
   - serverless-python-requirements
