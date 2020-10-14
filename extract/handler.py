@@ -3,6 +3,7 @@ import sys
 import boto3
 import json
 from read_from_s3 import get_file_names, read_csv_file_from_s3, output_raw_transactions
+from send_dict_to_sqs import send_dict_to_sqs
 
 def start(event, context):
     try:
@@ -23,3 +24,10 @@ def start(event, context):
             print ("Couldn't extract from S3 files")
             print (str(ERROR))
         # Send JSON in SQS
+        try:
+            send_dict_to_sqs(json_data)
+            print(f"{file_name} : Data has been sent to SQS")
+        except Exception as ERROR:
+            print(f"{file_name} : Unable to send data to SQS")
+        
+start(None, None)
