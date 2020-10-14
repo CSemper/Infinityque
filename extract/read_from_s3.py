@@ -11,8 +11,8 @@ def get_key_prefix():
      key_prefix = yesterday.strftime("%Y/%m/%d") 
      return(key_prefix) 
  
-def get_file_name():
-    '''Returns csv file name for a given location and date.'''
+def get_file_names():
+    '''Yield all files in bucket that start with today's date.'''
     # List all files in bucket
     s3 = boto3.resource('s3')
     bucket = s3.Bucket("group3-testbucket")
@@ -20,7 +20,7 @@ def get_file_name():
     file_name_start = get_key_prefix()
     for file_name in all_files:
         if file_name.startswith(file_name_start):
-            return file_name
+            yield file_name
 
 
 def read_csv_file_from_s3(bucket, key):
