@@ -4,6 +4,7 @@ import boto3
 import json
 from read_from_s3 import get_file_names, read_csv_file_from_s3, output_raw_transactions
 from send_dict_to_sqs import send_dict_to_sqs 
+
 def start(event, context):
     try:
         all_files = get_file_names()
