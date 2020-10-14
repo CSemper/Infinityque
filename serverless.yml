@@ -81,6 +81,7 @@ resources:
           - lambda:CreateEventSourceMapping
           - lambda:ListEventSourceMappings
           - lambda:ListFunctions
+          Resource: !GetAtt group-3-dev-group3-transform.Arn
 
     Group3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
@@ -92,6 +93,7 @@ resources:
           - lambda:CreateEventSourceMapping
           - lambda:ListEventSourceMappings
           - lambda:ListFunctions
+          Resource: !GetAtt group-3-dev-group3-load.Arn
 
 plugins:
   - serverless-python-requirements
