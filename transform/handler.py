@@ -7,7 +7,7 @@ import json, os
 
 import boto3
 
-from transform import clean_transactions, create_baskets
+from clean_data import clean_transactions, create_baskets
 
 def start(event, context):
     print ("Transform lambda start")
