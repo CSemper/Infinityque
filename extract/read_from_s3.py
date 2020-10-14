@@ -3,8 +3,6 @@ import datetime
 
 import boto3
 
-from raw_class import Raw_Transaction
-
 def get_key_prefix():
      today = datetime.date.today()
      yesterday = today - datetime.timedelta(days=1)

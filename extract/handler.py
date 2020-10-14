@@ -3,7 +3,6 @@ import sys
 import boto3
 import json
 from read_from_s3 import get_file_names, read_csv_file_from_s3, output_raw_transactions
-from raw_class import Raw_Transaction
 
 def start(event, context):
     try:
@@ -24,4 +23,3 @@ def start(event, context):
             print ("Couldn't extract from S3 files")
             print (str(ERROR))
         # Send JSON in SQS
-        
