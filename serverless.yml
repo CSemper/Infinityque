@@ -12,19 +12,19 @@ provider:
     - sqs:SendMessage
     - s3:Get*
     - s3:List*
-    Resource: !GetAtt group-3-dev-group3-extract.Arn
+    Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
   - Effect: Allow
     Action:
     - 'sqs:ReceiveMessage'
     - 'sqs:DeleteMessage'
     - 'sqs:SendMessage'
-    Resource: !GetAtt group-3-dev-group3-transform.Arn
+    Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
   - Effect: "Allow"
     Action: 
     - 'sqs:ReceiveMessage'
     - 'sqs:SendMessage'
     - 'redshift:*'
-    Resource: !GetAtt group-3-dev-group3-load.Arn
+    Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
   - Effect: "Allow"
     Action: 
     - 'lambda:CreateEventSourceMapping'
