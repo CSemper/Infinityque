@@ -26,13 +26,21 @@ def start(event, context):
     print('Created baskets')
 
     # Send json data to SQS
-    json_data = json.dumps({
-        'transactions': clean_transaction_list,
+    transaction_data = json.dumps({
+        'transactions': clean_transaction_list
+    })
+    basket_data = json.dumps({
         'baskets': basket_list
     })
     try:
-        send_dict_to_sqs(json_data)
-        print('Sent data to SQS')
+        send_dict_to_sqs(transaction_data)
+        print('Sent transaction data to SQS')
     except Exception as ERROR:
         print(str(ERROR))
-        print('Failed to send data to SQS')
+        print('Failed to send transaction data to SQS')
+    try:
+        send_dict_to_sqs(basket_data)
+        print('Sent basket data to SQS')
+    except Exception as ERROR:
+        print(str(ERROR))
+        print('Failed to send basket data to SQS')
