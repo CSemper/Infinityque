@@ -14,6 +14,8 @@ provider:
   #       - lambda:GetFunction
   #       - lambda:GetFunctionConfiguration
   #     Resource: !GetAtt ExtractLambdaFunction.Arn
+
+
   # iamRoleStatements:
   # - Effect: Allow
   #   Action:
@@ -164,7 +166,6 @@ resources:
     #   Type: "AWS::Lambda::Function"
     #   Properties: 
     #     FunctionName: "group-3-test-dev-load" 
-
+    
 plugins:
   - serverless-python-requirements
-  - serverless-iam-roles-per-function
