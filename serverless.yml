@@ -13,7 +13,7 @@ provider:
         - lambda:InvokeFunction
         - lambda:GetFunction
         - lambda:GetFunctionConfiguration
-      Resource: !GetAtt group-3-test-dev-extract
+      Resource: !GetAtt group-3-test-dev-extract.Arn
   # iamRoleStatements:
   # - Effect: Allow
   #   Action:
@@ -79,7 +79,7 @@ functions:
       - Effect: Allow
         Action:
           - lambda:InvokeFunction
-        Resource: !GetAtt group-3-test-dev-extract
+        Resource: !GetAtt group-3-test-dev-extract.Arn
 
 
   transform:
