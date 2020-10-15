@@ -100,8 +100,8 @@ resources:
   
   # group-3-dev-load:
   #   Type: "AWS::Lambda::Function"
-  #   Properties:
-  #     FunctionName: "group-3-dev-load"
+  #   Properties: 
+  #     FunctionName: "group-3-dev-load" 
 
 plugins:
   - serverless-python-requirements
