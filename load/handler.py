@@ -41,7 +41,7 @@ def start(event, context):
         # If SQS message contained baskets, write baskets...
         with conn.cursor() as cursor:
             psycopg2.extras.execute_values(cursor, """
-                INSERT INTO basket_g3 (transaction_id, item, flavour, size, cost) VALUES %s;
+                INSERT INTO basket_g3 (trans_id, product, flavour, size, cost) VALUES %s;
             """, [(
                 basket['trans_id'],
                 basket['item'],
