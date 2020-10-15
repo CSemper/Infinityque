@@ -133,7 +133,7 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "testGroup3SQSExtracttoTransform"
-
+    
     testGroup3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
       Properties:
@@ -142,29 +142,28 @@ resources:
     EventInvokeConfig:
       Type: "AWS::Lambda::EventInvokeConfig"
       Properties:
-        FunctionName: group-3-test-dev-extract
+        FunctionName: !Ref group-3-test-dev-extract
         #MaximumRetryAttempts: 1
         DestinationConfig:
           OnSuccess:
             Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
         #MaximumEventAgeInSeconds: 600
-  
-  
-  # group-3-dev-extract:
-  #   Type: "AWS::Lambda::Function"
-  #   Properties:
-  #     FunctionName: "group-3-dev-extract"
-  
-  # group-3-dev-transform:
-  #   Type: "AWS::Lambda::Function"
-  #   Properties:
-  #     FunctionName: "group-3-dev-transform"
-  
-  # group-3-dev-load:
-  #   Type: "AWS::Lambda::Function"
-  #   Properties: 
-  #     FunctionName: "group-3-dev-load" 
+    
+    group-3-test-dev-extract:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        FunctionName: "group-3-test-dev-extract"
+    
+    group-3-test-dev-transform:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        FunctionName: "group-3-test-dev-transform"
+    
+    group-3-test-dev-load:
+      Type: "AWS::Lambda::Function"
+      Properties: 
+        FunctionName: "group-3-test-dev-load" 
 
 plugins:
   - serverless-python-requirements
