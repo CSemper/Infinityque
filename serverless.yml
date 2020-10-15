@@ -112,8 +112,15 @@ functions:
       - Effect: 'Allow'
         Action: 
           - sqs:ReceiveMessage
-          - sqs:SendMessage
-          - redshift:*
+        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
+      - Effect: 'Allow'
+        Action:
+          - redshift:GetClusterCredentials
+          - redshift:DescribeClusters
+          - redshift-data:ExecuteStatement
+        Resource:
+        - arn:aws:redshift:eu-west-1:579154747729:dbuser:bir1-cluster/awsuser
+        - arn:aws:redshift:eu-west-1:579154747729:dbname:bir1-cluster/dev
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
