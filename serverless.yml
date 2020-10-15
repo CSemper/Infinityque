@@ -57,11 +57,11 @@ functions:
     include: 
       - extract
     iamRoleStatements:
-    - Effect: Allow
-      Action:
-      - sqs:SendMessage
-      - s3:Get*
-      - s3:List*
+      - Effect: Allow
+        Action:
+        - sqs:SendMessage
+        - s3:Get*
+        - s3:List*
 
   transform:
     handler: handler.start
@@ -110,12 +110,12 @@ functions:
 
 resources:
   Resources:
-    Group3SQSExtracttoTransform:
+    testGroup3SQSExtracttoTransform:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "testGroup3SQSExtracttoTransform"
 
-    Group3SQSTransformtoLoad:
+    testGroup3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "testGroup3SQSTransformtoLoad"
