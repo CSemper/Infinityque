@@ -64,7 +64,7 @@ functions:
       - transform
     events:
       - sqs:
-          arn: !Ref Group3SQSExtracttoTransform.Arn
+          arn: !GetAtt Group3SQSExtracttoTransform.Arn
 
   load:
     handler: handler.start
@@ -74,7 +74,7 @@ functions:
       - psycopg2
     events:
       - sqs:
-          arn: !Ref Group3SQSTransformtoLoad.Arn
+          arn: !GetAtt Group3SQSTransformtoLoad.Arn
 
 Resources:
   Group3SQSExtracttoTransform:
