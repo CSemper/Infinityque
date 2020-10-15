@@ -76,16 +76,17 @@ functions:
       - sqs:
           arn: !GetAtt Group3SQSTransformtoLoad.Arn
 
-Resources:
-  Group3SQSExtracttoTransform:
-    Type: "AWS::SQS::Queue"
-    Properties:
-      QueueName: "Group3SQSExtracttoTransform"
+resources:
+  Resources:
+    Group3SQSExtracttoTransform:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3SQSExtracttoTransform"
 
-  Group3SQSTransformtoLoad:
-    Type: "AWS::SQS::Queue"
-    Properties:
-      QueueName: "Group3SQSTransformtoLoad"
+    Group3SQSTransformtoLoad:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3SQSTransformtoLoad"
   
   # group-3-dev-extract:
   #   Type: "AWS::Lambda::Function"
