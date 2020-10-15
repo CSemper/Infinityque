@@ -1,7 +1,7 @@
 import json
 
 import boto3
-import psycopg2
+import psycopg2.extras
 from connect_to_redshift import connect_to_redshift
 
 
@@ -12,10 +12,12 @@ def start(event, context):
     # Check if baskets or transactions data
     if 'transactions' in data:
         data_is_transactions = True
-        transaction_list = data
+        transaction_list = data['transactions']
+        print(transaction_list)
     else:
         data_is_transactions = False
-        basket_list = data
+        basket_list = data['baskets']
+        print(basket_list)
 
     # Connect to redshift
     conn = connect_to_redshift()
@@ -50,4 +52,4 @@ def start(event, context):
                 basket['cost']
             ) for basket in basket_list])
             conn.commit()
-        print('Basket Items written to database')
+        print('Baskets written to database')
