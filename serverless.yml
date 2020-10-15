@@ -119,6 +119,18 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "testGroup3SQSTransformtoLoad"
+    
+    EventInvokeConfig:
+      Type: "AWS::Lambda::EventInvokeConfig"
+      Properties:
+        FunctionName: "group-3-test-dev-extract"
+        MaximumRetryAttempts: 1
+        DestinationConfig:
+          OnSucces:
+            Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
+        Qualifier: "$LATEST"
+        MaximumEventAgeInSeconds: 600
+  
   
   # group-3-dev-extract:
   #   Type: "AWS::Lambda::Function"
