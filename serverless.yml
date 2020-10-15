@@ -67,18 +67,18 @@ functions:
     include: 
       - extract
     iamRoleStatements:
-      - Effect: Allow
+      - Effect: 'Allow'
         Action:
           - sqs:SendMessage
         Resource: !GetAtt testGroup3SQSExtracttoTransform.Arn
-      - Effect: Allow
+      - Effect: 'Allow'
         Action:
-          - s3:Get*
-          - s3:List*
+          - s3:GetObject
+          - s3:ListBucket
         Resource:
           - arn:aws:s3:::cafe-transactions
           - arn:aws:s3:::cafe-transactions/*
-      - Effect: Allow
+      - Effect: 'Allow'
         Action:
           - lambda:InvokeAsync
           - lambda:InvokeFunction
@@ -92,7 +92,7 @@ functions:
     include: 
       - transform
     iamRoleStatements:
-      - Effect: Allow
+      - Effect: 'Allow'
         Action:
           - sqs:ReceiveMessage
           - sqs:DeleteMessage
@@ -109,7 +109,7 @@ functions:
       - load
       - psycopg2
     iamRoleStatements:
-      - Effect: Allow
+      - Effect: 'Allow'
         Action: 
           - sqs:ReceiveMessage
           - sqs:SendMessage
