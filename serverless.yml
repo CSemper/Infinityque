@@ -13,7 +13,7 @@ provider:
         - lambda:InvokeFunction
         - lambda:GetFunction
         - lambda:GetFunctionConfiguration
-      Resource: !GetAtt group-3-test-dev-extract.Arn
+      Resource: !GetAtt ExtractLambdaFunction.Arn
   # iamRoleStatements:
   # - Effect: Allow
   #   Action:
@@ -79,7 +79,7 @@ functions:
       - Effect: Allow
         Action:
           - lambda:InvokeFunction
-        Resource: !GetAtt group-3-test-dev-extract.Arn
+        Resource: !GetAtt ExtractLambdaFunction.Arn
 
 
   transform:
@@ -142,7 +142,7 @@ resources:
     EventInvokeConfig:
       Type: "AWS::Lambda::EventInvokeConfig"
       Properties:
-        FunctionName: !Ref group-3-test-dev-extract
+        FunctionName: !GetAtt ExtractLambdaFunction.Arn
         #MaximumRetryAttempts: 1
         DestinationConfig:
           OnSuccess:
@@ -150,20 +150,20 @@ resources:
         Qualifier: "$LATEST"
         #MaximumEventAgeInSeconds: 600
     
-    group-3-test-dev-extract:
-      Type: "AWS::Lambda::Function"
-      Properties:
-        FunctionName: "group-3-test-dev-extract"
+    # group-3-test-dev-extract:
+    #   Type: "AWS::Lambda::Function"
+    #   Properties:
+    #     FunctionName: "group-3-test-dev-extract"
     
-    group-3-test-dev-transform:
-      Type: "AWS::Lambda::Function"
-      Properties:
-        FunctionName: "group-3-test-dev-transform"
+    # group-3-test-dev-transform:
+    #   Type: "AWS::Lambda::Function"
+    #   Properties:
+    #     FunctionName: "group-3-test-dev-transform"
     
-    group-3-test-dev-load:
-      Type: "AWS::Lambda::Function"
-      Properties: 
-        FunctionName: "group-3-test-dev-load" 
+    # group-3-test-dev-load:
+    #   Type: "AWS::Lambda::Function"
+    #   Properties: 
+    #     FunctionName: "group-3-test-dev-load" 
 
 plugins:
   - serverless-python-requirements
