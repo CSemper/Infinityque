@@ -6,6 +6,7 @@ provider:
   stage: dev
   region: eu-west-1
   runtime: python3.8
+  role: arn:aws:iam::579154747729:role/group-3-dev-eu-west-1-lambdaRole
   # iamRoleStatements:
   #   - Effect: Allow
   #     Action:
