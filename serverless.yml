@@ -68,6 +68,10 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions
           - arn:aws:s3:::cafe-transactions/*
+      - Effect: Allow
+        Action:
+          - lambda:InvokeFunction
+        Resource: !GetAtt group-3-test-dev-extract
 
 
   transform:
