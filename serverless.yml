@@ -1,5 +1,5 @@
 
-service: group-3
+service: group-3-test
 
 provider:
   name: aws
@@ -56,15 +56,27 @@ functions:
     module: extract
     include: 
       - extract
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - sqs:SendMessage
+      - s3:Get*
+      - s3:List*
 
   transform:
     handler: handler.start
     module: transform
     include: 
       - transform
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:SendMessage
     events:
       - sqs:
-          arn: !GetAtt Group3SQSExtracttoTransform.Arn
+          arn: !GetAtt testGroup3SQSExtracttoTransform.Arn
 
   load:
     handler: handler.start
@@ -72,21 +84,41 @@ functions:
     include: 
       - load
       - psycopg2
+    iamRoleStatements:
+      - Effect: Allow
+        Action: 
+        - sqs:ReceiveMessage
+        - sqs:SendMessage
+        - redshift:*
     events:
       - sqs:
-          arn: !GetAtt Group3SQSTransformtoLoad.Arn
+          arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
+          # arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
+    environment:
+      DB_CLUSTER: "bir1-cluster"
+      DB_HOST: "10.0.1.223"
+      DB_NAME: "dev"
+      DB_PASS: "*y3EoPZH*Luazyc#%i^xS#jc%n5$WSY^o%PThw!U"
+      DB_PORT: "5439"
+      DB_USER: "awsuser"
+    vpc:
+      securityGroupIds:
+        - sg-03601054033ee65d6
+        - sg-04ffa039212cd915c
+      subnetIds:
+        - subnet-0b0c0f6ea99bda1ee
 
 resources:
   Resources:
     Group3SQSExtracttoTransform:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "Group3SQSExtracttoTransform"
+        QueueName: "testGroup3SQSExtracttoTransform"
 
     Group3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "Group3SQSTransformtoLoad"
+        QueueName: "testGroup3SQSTransformtoLoad"
   
   # group-3-dev-extract:
   #   Type: "AWS::Lambda::Function"
