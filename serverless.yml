@@ -93,7 +93,6 @@ functions:
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
-          # arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
     environment:
       DB_CLUSTER: "bir1-cluster"
       DB_HOST: "10.0.1.223"
@@ -126,7 +125,7 @@ resources:
         FunctionName: "group-3-test-dev-extract"
         MaximumRetryAttempts: 1
         DestinationConfig:
-          OnSucces:
+          OnSuccess:
             Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
         MaximumEventAgeInSeconds: 600
