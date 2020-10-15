@@ -6,6 +6,14 @@ provider:
   stage: dev
   region: eu-west-1
   runtime: python3.8
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeAsync
+        - lambda:InvokeFunction
+        - lambda:GetFunction
+        - lambda:GetFunctionConfiguration
+      Resource: !GetAtt group-3-test-dev-extract
   # iamRoleStatements:
   # - Effect: Allow
   #   Action:
