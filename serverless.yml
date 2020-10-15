@@ -6,14 +6,14 @@ provider:
   stage: dev
   region: eu-west-1
   runtime: python3.8
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - lambda:InvokeAsync
-        - lambda:InvokeFunction
-        - lambda:GetFunction
-        - lambda:GetFunctionConfiguration
-      Resource: !GetAtt ExtractLambdaFunction.Arn
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - lambda:InvokeAsync
+  #       - lambda:InvokeFunction
+  #       - lambda:GetFunction
+  #       - lambda:GetFunctionConfiguration
+  #     Resource: !GetAtt ExtractLambdaFunction.Arn
 
 
   # iamRoleStatements:
@@ -80,9 +80,11 @@ functions:
           - arn:aws:s3:::cafe-transactions/*
       - Effect: Allow
         Action:
+          - lambda:InvokeAsync
           - lambda:InvokeFunction
+          - lambda:GetFunction
+          - lambda:GetFunctionConfiguration
         Resource: !GetAtt ExtractLambdaFunction.Arn
-
 
   transform:
     handler: handler.start
