@@ -1,8 +1,8 @@
-
-'''UNFINISHED!!! Clean data from SQS and send to SQS
+'''Clean data from extract module and send to load module using SQS
 
 1. Receive a JSON list of raw transactions from SQS
 2. Convert to a list of clean transactions and a list of baskets
+3. Send each list in an SQS message
 '''
 import json, os
 
