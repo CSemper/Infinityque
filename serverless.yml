@@ -59,9 +59,16 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-        - sqs:SendMessage
-        - s3:Get*
-        - s3:List*
+          - sqs:SendMessage
+        Resource: !GetAtt testGroup3SQSExtracttoTransform.Arn
+      - Effect: Allow
+        Action:
+          - s3:Get*
+          - s3:List*
+        Resource:
+          - arn:aws:s3:::cafe-transactions
+          - arn:aws:s3:::cafe-transactions/*
+
 
   transform:
     handler: handler.start
@@ -71,9 +78,10 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-        - sqs:ReceiveMessage
-        - sqs:DeleteMessage
-        - sqs:SendMessage
+          - sqs:ReceiveMessage
+          - sqs:DeleteMessage
+          - sqs:SendMessage
+        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSExtracttoTransform.Arn
@@ -87,9 +95,9 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action: 
-        - sqs:ReceiveMessage
-        - sqs:SendMessage
-        - redshift:*
+          - sqs:ReceiveMessage
+          - sqs:SendMessage
+          - redshift:*
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
@@ -123,12 +131,12 @@ resources:
       Type: "AWS::Lambda::EventInvokeConfig"
       Properties:
         FunctionName: "group-3-test-dev-extract"
-        MaximumRetryAttempts: 1
+        #MaximumRetryAttempts: 1
         DestinationConfig:
           OnSuccess:
             Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
-        MaximumEventAgeInSeconds: 600
+        #MaximumEventAgeInSeconds: 600
   
   
   # group-3-dev-extract:
