@@ -6,43 +6,10 @@ provider:
   stage: dev
   region: eu-west-1
   runtime: python3.8
-  # iamRoleStatements:
-  # - Effect: Allow
-  #   Action:
-  #   - sqs:SendMessage
-  #   - s3:Get*
-  #   - s3:List*
-  #   Resource: !GetAtt group-3-extract.Arn
-  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
-  # - Effect: Allow
-  #   Action:
-  #   - sqs:ReceiveMessage
-  #   - sqs:DeleteMessage
-  #   - sqs:SendMessage
-  #   Resource: !GetAtt group-3-transform.Arn
-  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
-  # - Effect: Allow
-  #   Action: 
-  #   - sqs:ReceiveMessage
-  #   - sqs:SendMessage
-  #   - redshift:*
-  #   Resource: !GetAtt group-3-load.Arn
-  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
-  # - Effect: Allow
-  #   Action: 
-  #   - lambda:CreateEventSourceMapping
-  #   - lambda:ListEventSourceMappings
-  #   - lambda:ListFunctions
-  #   - sqs:*
-  #   Resource: !GetAtt Group3SQSExtracttoTransform.Arn
-  # - Effect: Allow
-  #   Action: 
-  #   - lambda:CreateEventSourceMapping
-  #   - lambda:ListEventSourceMappings
-  #   - lambda:ListFunctions
-  #   - sqs:*
-  #   Resource: !GetAtt Group3SQSTransformtoLoad.Arn
 
+plugins:
+  - serverless-python-requirements
+  - serverless-iam-roles-per-function
 
 package:
   individually: true
@@ -54,14 +21,33 @@ functions:
   extract:
     handler: handler.start
     module: extract
-    include: 
+    include:
       - extract
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - sqs:SendMessage
+        Resource: !GetAtt Group3SQSExtracttoTransform.Arn
+      - Effect: 'Allow'
+        Action:
+          - s3:GetObject
+          - s3:ListBucket
+        Resource:
+          - arn:aws:s3:::cafe-transactions
+          - arn:aws:s3:::cafe-transactions/*
 
   transform:
     handler: handler.start
     module: transform
-    include: 
+    include:
       - transform
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - sqs:ReceiveMessage
+          - sqs:DeleteMessage
+          - sqs:SendMessage
+        Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     events:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
@@ -69,12 +55,38 @@ functions:
   load:
     handler: handler.start
     module: load
-    include: 
+    include:
       - load
       - psycopg2
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action: 
+          - sqs:ReceiveMessage
+        Resource: !GetAtt Group3SQSTransformtoLoad.Arn
+      - Effect: 'Allow'
+        Action:
+          - redshift:GetClusterCredentials
+          - redshift:DescribeClusters
+          - redshift-data:ExecuteStatement
+        Resource:
+          - arn:aws:redshift:eu-west-1:579154747729:dbuser:bir1-cluster/awsuser
+          - arn:aws:redshift:eu-west-1:579154747729:dbname:bir1-cluster/dev
     events:
       - sqs:
           arn: !GetAtt Group3SQSTransformtoLoad.Arn
+    environment:
+      DB_CLUSTER: "bir1-cluster"
+      DB_HOST: "10.0.1.223"
+      DB_NAME: "dev"
+      DB_PASS: "*y3EoPZH*Luazyc#%i^xS#jc%n5$WSY^o%PThw!U"
+      DB_PORT: "5439"
+      DB_USER: "awsuser"
+    vpc:
+      securityGroupIds:
+        - sg-03601054033ee65d6
+        - sg-04ffa039212cd915c
+      subnetIds:
+        - subnet-0b0c0f6ea99bda1ee
 
 resources:
   Resources:
@@ -82,26 +94,37 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSExtracttoTransform"
-
+    
     Group3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSTransformtoLoad"
-  
-  # group-3-dev-extract:
-  #   Type: "AWS::Lambda::Function"
-  #   Properties:
-  #     FunctionName: "group-3-dev-extract"
-  
-  # group-3-dev-transform:
-  #   Type: "AWS::Lambda::Function"
-  #   Properties:
-  #     FunctionName: "group-3-dev-transform"
-  
-  # group-3-dev-load:
-  #   Type: "AWS::Lambda::Function"
-  #   Properties:
-  #     FunctionName: "group-3-dev-load"
+    
+    ExtractDestination:
+      Type: "AWS::Lambda::EventInvokeConfig"
+      Properties:
+        FunctionName: !Ref ExtractLambdaFunction
+        DestinationConfig:
+          OnSuccess:
+            Destination: !GetAtt Group3SQSExtracttoTransform.Arn
+        Qualifier: "$LATEST"
+    
+    TransformDestination:
+      Type: "AWS::Lambda::EventInvokeConfig"
+      Properties:
+        FunctionName: !Ref TransformLambdaFunction
+        DestinationConfig:
+          OnSuccess:
+            Destination: !GetAtt Group3SQSTransformtoLoad.Arn
+        Qualifier: "$LATEST"
 
-plugins:
-  - serverless-python-requirements
+    ExtractDailyTrigger:
+      Type: "AWS::Events::Rule"
+      Properties:
+        Name: "DailyTrigger"
+        # ScheduleExpression: "cron(0 12 * * ? *)"
+        ScheduleExpression: "rate(1 day)"
+        State: ENABLED
+        Targets: 
+          - Arn: !GetAtt ExtractLambdaFunction.Arn
+            Id: ExtractDailyTrigger
