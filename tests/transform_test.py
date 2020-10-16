@@ -20,10 +20,11 @@ def test_clean_transactions():
         'pay_amount': '5.00',
         'payment_method': 'CASH',
         'ccn': '',
-        'id_number': 0
+        'id_number': 0,
+        'identity': '20-00-54'
     }]
     expected_output = [{
-        'unique_id': '09-29-2020-ISLE-0',
+        'unique_id': '09-29-2020-ISLE-20-00-54-0',
         'date': '09-29-2020',
         'time': '09:00',
         'location': 'Isle of Wight',

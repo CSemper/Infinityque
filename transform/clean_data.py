@@ -11,7 +11,8 @@ def clean_transactions(raw_transaction_list):
         clean_date = f'{month}-{day}-{year}'
         # Create unique ID
         abbreviated_location = raw_transaction['location'][:4].upper()
-        id_string = f'{clean_date}-{abbreviated_location}-{raw_transaction["id_number"]}'
+        unique_key = raw_transaction['identity']
+        id_string = f'{clean_date}-{abbreviated_location}-{unique_key}-{raw_transaction["id_number"]}'
         # Remove surname
         name = raw_transaction['customer_name'].split()[0]
         # Create clean transaction and append to list

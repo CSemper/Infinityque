@@ -2,7 +2,7 @@ import os
 import sys
 import boto3
 import json
-from read_from_s3 import get_file_names, read_csv_file_from_s3, output_raw_transactions
+from read_from_s3 import get_file_names, read_csv_file_from_s3, output_raw_transactions, get_key_suffix
 from send_dict_to_sqs import send_dict_to_sqs 
 
 def start(event, context):
@@ -16,7 +16,9 @@ def start(event, context):
             # Read data
             data = read_csv_file_from_s3(bucket="group3-testbucket", key=file_name)
             print('Read data from csv')
-            raw_transactions = output_raw_transactions(data)
+            identifier = get_key_suffix(file_name)
+            print(identifier)
+            raw_transactions = output_raw_transactions(data, identifier)
             print('Read raw transactions')
             json_data = json.dumps(raw_transactions)
             print('Converted to JSON')

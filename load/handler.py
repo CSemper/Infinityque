@@ -53,3 +53,5 @@ def start(event, context):
             ) for basket in basket_list])
             conn.commit()
         print('Baskets written to database')
+    conn.close()
+    print('Closed connection')

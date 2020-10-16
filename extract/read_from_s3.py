@@ -1,6 +1,5 @@
 import csv
 import datetime
-
 import boto3
 
 def get_key_prefix():
@@ -8,7 +7,7 @@ def get_key_prefix():
      yesterday = today - datetime.timedelta(days=1)
      key_prefix = yesterday.strftime("%Y/%m/%d") 
      return(key_prefix) 
- 
+
 def get_file_names():
     '''Yield all files in bucket that start with today's date.'''
     # List all files in bucket
@@ -20,7 +19,12 @@ def get_file_names():
         if file_name.startswith(file_name_start):
             yield file_name
 
-
+def get_key_suffix(file_name):
+    '''Returns last 12 characters of file name.'''
+    suffix = file_name[-12:]
+    identifier = suffix.replace('.csv', '')
+    return identifier.strip()
+    
 def read_csv_file_from_s3(bucket, key):
     s3 = boto3.client('s3')
     s3_object = s3.get_object(Bucket=bucket,
@@ -28,7 +32,7 @@ def read_csv_file_from_s3(bucket, key):
     data = s3_object['Body'].read().decode('utf-8')
     return csv.reader(data.splitlines())
 
-def output_raw_transactions(csv_reader, skip_header=True):
+def output_raw_transactions(csv_reader, identifier, skip_header=True):
     '''Convert csv reader into a list of dictinaries'''
     raw_transaction_list = []
     if skip_header:
@@ -44,7 +48,8 @@ def output_raw_transactions(csv_reader, skip_header=True):
                 'pay_amount': line[4],
                 'payment_method': line[5],
                 'ccn': line[6],
-                'id_number': counter
+                'id_number': counter,
+                'identity': identifier
             }
             raw_transaction_list.append(raw_transaction)
             counter += 1
