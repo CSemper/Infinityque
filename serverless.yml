@@ -1,5 +1,5 @@
 
-service: group-3-test
+service: group-3
 
 provider:
   name: aws
@@ -27,7 +27,7 @@ functions:
       - Effect: 'Allow'
         Action:
           - sqs:SendMessage
-        Resource: !GetAtt testGroup3SQSExtracttoTransform.Arn
+        Resource: !GetAtt Group3SQSExtracttoTransform.Arn
       - Effect: 'Allow'
         Action:
           - s3:GetObject
@@ -47,10 +47,10 @@ functions:
           - sqs:ReceiveMessage
           - sqs:DeleteMessage
           - sqs:SendMessage
-        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
+        Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     events:
       - sqs:
-          arn: !GetAtt testGroup3SQSExtracttoTransform.Arn
+          arn: !GetAtt Group3SQSExtracttoTransform.Arn
 
   load:
     handler: handler.start
@@ -62,7 +62,7 @@ functions:
       - Effect: 'Allow'
         Action: 
           - sqs:ReceiveMessage
-        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
+        Resource: !GetAtt Group3SQSTransformtoLoad.Arn
       - Effect: 'Allow'
         Action:
           - redshift:GetClusterCredentials
@@ -73,7 +73,7 @@ functions:
           - arn:aws:redshift:eu-west-1:579154747729:dbname:bir1-cluster/dev
     events:
       - sqs:
-          arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
+          arn: !GetAtt Group3SQSTransformtoLoad.Arn
     environment:
       DB_CLUSTER: "bir1-cluster"
       DB_HOST: "10.0.1.223"
@@ -90,15 +90,15 @@ functions:
 
 resources:
   Resources:
-    testGroup3SQSExtracttoTransform:
+    Group3SQSExtracttoTransform:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "testGroup3SQSExtracttoTransform"
+        QueueName: "Group3SQSExtracttoTransform"
     
-    testGroup3SQSTransformtoLoad:
+    Group3SQSTransformtoLoad:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "testGroup3SQSTransformtoLoad"
+        QueueName: "Group3SQSTransformtoLoad"
     
     ExtractDestination:
       Type: "AWS::Lambda::EventInvokeConfig"
@@ -106,7 +106,7 @@ resources:
         FunctionName: !Ref ExtractLambdaFunction
         DestinationConfig:
           OnSuccess:
-            Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
+            Destination: !GetAtt Group3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
     
     TransformDestination:
@@ -115,7 +115,7 @@ resources:
         FunctionName: !Ref TransformLambdaFunction
         DestinationConfig:
           OnSuccess:
-            Destination: !GetAtt testGroup3SQSTransformtoLoad.Arn
+            Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
     ExtractDailyTrigger:
