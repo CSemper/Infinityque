@@ -126,4 +126,4 @@ resources:
         ScheduleExpression: "rate(1 day)"
         State: "Enabled"
         Targets: 
-          - !Ref ExtractLambdaFunction
+          - Arn: !GetAtt ExtractLambdaFunction
