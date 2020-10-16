@@ -54,6 +54,9 @@ provider:
   #   - sqs:*
   #   Resource: !GetAtt Group3SQSTransformtoLoad.Arn
 
+plugins:
+  - serverless-python-requirements
+  - serverless-iam-roles-per-function
 
 package:
   individually: true
@@ -178,5 +181,3 @@ resources:
     #   Properties: 
     #     FunctionName: "group-3-test-dev-load" 
     
-plugins:
-  - serverless-python-requirements
