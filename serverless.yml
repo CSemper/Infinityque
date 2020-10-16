@@ -56,7 +56,6 @@ provider:
 
 plugins:
   - serverless-python-requirements
-  - serverless-iam-roles-per-function
 
 package:
   individually: true
