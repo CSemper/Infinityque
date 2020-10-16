@@ -124,8 +124,7 @@ resources:
         Name: "DailyTrigger"
         # ScheduleExpression: "cron(0 12 * * ? *)"
         ScheduleExpression: "rate(1 day)"
-        State: "Enabled"
+        State: ENABLED
         Targets: 
           - Arn: !GetAtt ExtractLambdaFunction.Arn
             Id: ExtractDailyTrigger
-  
