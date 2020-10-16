@@ -1,6 +1,6 @@
 import csv
 import datetime
-
+from handler import identifier
 import boto3
 
 def get_key_prefix():
@@ -8,7 +8,7 @@ def get_key_prefix():
      yesterday = today - datetime.timedelta(days=1)
      key_prefix = yesterday.strftime("%Y/%m/%d") 
      return(key_prefix) 
- 
+
 def get_file_names():
     '''Yield all files in bucket that start with today's date.'''
     # List all files in bucket
@@ -20,7 +20,11 @@ def get_file_names():
         if file_name.startswith(file_name_start):
             yield file_name
 
-
+def get_key_suffix(file_name):
+    suffix = file_name[12:]
+    identifier = suffix.replace('.csv', '')
+    return identifier.strip()
+    
 def read_csv_file_from_s3(bucket, key):
     s3 = boto3.client('s3')
     s3_object = s3.get_object(Bucket=bucket,
@@ -34,6 +38,7 @@ def output_raw_transactions(csv_reader, skip_header=True):
     if skip_header:
         next(csv_reader)
     counter = 0
+    identity = identifier
     for line in csv_reader:
         try:
             raw_transaction = {
@@ -44,7 +49,8 @@ def output_raw_transactions(csv_reader, skip_header=True):
                 'pay_amount': line[4],
                 'payment_method': line[5],
                 'ccn': line[6],
-                'id_number': counter
+                'id_number': counter,
+                'identity': identity
             }
             raw_transaction_list.append(raw_transaction)
             counter += 1
