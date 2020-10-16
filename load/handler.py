@@ -35,7 +35,8 @@ def start(event, context):
                 transaction['location'],
                 transaction['first_name'],
                 transaction['total'],
-                transaction['payment_method']
+                transaction['payment_method'],
+                transaction['date_time']
             ) for transaction in transaction_list])
             conn.commit()
         print('Transactions written to database')
