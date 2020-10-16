@@ -6,19 +6,10 @@ provider:
   stage: dev
   region: eu-west-1
   runtime: python3.8
-  role: arn:aws:iam::579154747729:role/group-3-dev-eu-west-1-lambdaRole
-  # iamRoleStatements:
-  #   - Effect: Allow
-  #     Action:
-  #       - lambda:InvokeAsync
-  #       - lambda:InvokeFunction
-  #       - lambda:GetFunction
-  #       - lambda:GetFunctionConfiguration
-  #     Resource: !GetAtt ExtractLambdaFunction.Arn
-
 
 plugins:
   - serverless-python-requirements
+  - serverless-iam-roles-per-function
 
 package:
   individually: true
@@ -32,18 +23,18 @@ functions:
     module: extract
     include: 
       - extract
-    # iamRoleStatements:
-    #   - Effect: 'Allow'
-    #     Action:
-    #       - sqs:SendMessage
-    #     Resource: !GetAtt testGroup3SQSExtracttoTransform.Arn
-    #   - Effect: 'Allow'
-    #     Action:
-    #       - s3:GetObject
-    #       - s3:ListBucket
-    #     Resource:
-    #       - arn:aws:s3:::cafe-transactions
-    #       - arn:aws:s3:::cafe-transactions/*
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - sqs:SendMessage
+        Resource: !GetAtt testGroup3SQSExtracttoTransform.Arn
+      - Effect: 'Allow'
+        Action:
+          - s3:GetObject
+          - s3:ListBucket
+        Resource:
+          - arn:aws:s3:::cafe-transactions
+          - arn:aws:s3:::cafe-transactions/*
     #   - Effect: 'Allow'
     #     Action:
     #       - lambda:InvokeAsync
@@ -59,13 +50,13 @@ functions:
     module: transform
     include: 
       - transform
-    # iamRoleStatements:
-    #   - Effect: 'Allow'
-    #     Action:
-    #       - sqs:ReceiveMessage
-    #       - sqs:DeleteMessage
-    #       - sqs:SendMessage
-    #     Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - sqs:ReceiveMessage
+          - sqs:DeleteMessage
+          - sqs:SendMessage
+        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSExtracttoTransform.Arn
@@ -76,19 +67,19 @@ functions:
     include: 
       - load
       - psycopg2
-    # iamRoleStatements:
-    #   - Effect: 'Allow'
-    #     Action: 
-    #       - sqs:ReceiveMessage
-    #     Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
-    #   - Effect: 'Allow'
-    #     Action:
-    #       - redshift:GetClusterCredentials
-    #       - redshift:DescribeClusters
-    #       - redshift-data:ExecuteStatement
-    #     Resource:
-    #       - arn:aws:redshift:eu-west-1:579154747729:dbuser:bir1-cluster/awsuser
-    #       - arn:aws:redshift:eu-west-1:579154747729:dbname:bir1-cluster/dev
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action: 
+          - sqs:ReceiveMessage
+        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
+      - Effect: 'Allow'
+        Action:
+          - redshift:GetClusterCredentials
+          - redshift:DescribeClusters
+          - redshift-data:ExecuteStatement
+        Resource:
+          - arn:aws:redshift:eu-west-1:579154747729:dbuser:bir1-cluster/awsuser
+          - arn:aws:redshift:eu-west-1:579154747729:dbname:bir1-cluster/dev
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
@@ -128,19 +119,5 @@ resources:
             Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
         #MaximumEventAgeInSeconds: 600
-    
-    # group-3-test-dev-extract:
-    #   Type: "AWS::Lambda::Function"
-    #   Properties:
-    #     FunctionName: "group-3-test-dev-extract"
-    
-    # group-3-test-dev-transform:
-    #   Type: "AWS::Lambda::Function"
-    #   Properties:
-    #     FunctionName: "group-3-test-dev-transform"
-    
-    # group-3-test-dev-load:
-    #   Type: "AWS::Lambda::Function"
-    #   Properties: 
-    #     FunctionName: "group-3-test-dev-load" 
+
     
