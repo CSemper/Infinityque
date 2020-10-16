@@ -122,6 +122,6 @@ resources:
       Type: "AWS::Events::Rule"
       Properties:
         Name: "DailyTrigger"
-        ScheduleExpression: "rate(24 hours)"
+        ScheduleExpression: "cron(0 12 * * ? *)"
         State: "Enabled"
         Targets: !Ref ExtractLambdaFunction
