@@ -17,43 +17,6 @@ provider:
   #     Resource: !GetAtt ExtractLambdaFunction.Arn
 
 
-  # iamRoleStatements:
-  # - Effect: Allow
-  #   Action:
-  #   - sqs:SendMessage
-  #   - s3:Get*
-  #   - s3:List*
-  #   Resource: !GetAtt group-3-extract.Arn
-  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-extract
-  # - Effect: Allow
-  #   Action:
-  #   - sqs:ReceiveMessage
-  #   - sqs:DeleteMessage
-  #   - sqs:SendMessage
-  #   Resource: !GetAtt group-3-transform.Arn
-  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-transform
-  # - Effect: Allow
-  #   Action: 
-  #   - sqs:ReceiveMessage
-  #   - sqs:SendMessage
-  #   - redshift:*
-  #   Resource: !GetAtt group-3-load.Arn
-  #   # Resource: arn:aws:lambda:eu-west-1:579154747729:function:group-3-dev-group3-load
-  # - Effect: Allow
-  #   Action: 
-  #   - lambda:CreateEventSourceMapping
-  #   - lambda:ListEventSourceMappings
-  #   - lambda:ListFunctions
-  #   - sqs:*
-  #   Resource: !GetAtt Group3SQSExtracttoTransform.Arn
-  # - Effect: Allow
-  #   Action: 
-  #   - lambda:CreateEventSourceMapping
-  #   - lambda:ListEventSourceMappings
-  #   - lambda:ListFunctions
-  #   - sqs:*
-  #   Resource: !GetAtt Group3SQSTransformtoLoad.Arn
-
 plugins:
   - serverless-python-requirements
 
@@ -69,40 +32,40 @@ functions:
     module: extract
     include: 
       - extract
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action:
-          - sqs:SendMessage
-        Resource: !GetAtt testGroup3SQSExtracttoTransform.Arn
-      - Effect: 'Allow'
-        Action:
-          - s3:GetObject
-          - s3:ListBucket
-        Resource:
-          - arn:aws:s3:::cafe-transactions
-          - arn:aws:s3:::cafe-transactions/*
-      - Effect: 'Allow'
-        Action:
-          - lambda:InvokeAsync
-          - lambda:InvokeFunction
-          - lambda:GetFunction
-          - lambda:GetFunctionConfiguration
-          - lambda:PutFunctionEventInvokeConfig 
-        Resource: "*"
-        # Resource: !GetAtt ExtractLambdaFunction.Arn
+    # iamRoleStatements:
+    #   - Effect: 'Allow'
+    #     Action:
+    #       - sqs:SendMessage
+    #     Resource: !GetAtt testGroup3SQSExtracttoTransform.Arn
+    #   - Effect: 'Allow'
+    #     Action:
+    #       - s3:GetObject
+    #       - s3:ListBucket
+    #     Resource:
+    #       - arn:aws:s3:::cafe-transactions
+    #       - arn:aws:s3:::cafe-transactions/*
+    #   - Effect: 'Allow'
+    #     Action:
+    #       - lambda:InvokeAsync
+    #       - lambda:InvokeFunction
+    #       - lambda:GetFunction
+    #       - lambda:GetFunctionConfiguration
+    #       - lambda:PutFunctionEventInvokeConfig 
+    #     Resource: "*"
+    #     # Resource: !GetAtt ExtractLambdaFunction.Arn
 
   transform:
     handler: handler.start
     module: transform
     include: 
       - transform
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action:
-          - sqs:ReceiveMessage
-          - sqs:DeleteMessage
-          - sqs:SendMessage
-        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
+    # iamRoleStatements:
+    #   - Effect: 'Allow'
+    #     Action:
+    #       - sqs:ReceiveMessage
+    #       - sqs:DeleteMessage
+    #       - sqs:SendMessage
+    #     Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSExtracttoTransform.Arn
@@ -113,19 +76,19 @@ functions:
     include: 
       - load
       - psycopg2
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action: 
-          - sqs:ReceiveMessage
-        Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
-      - Effect: 'Allow'
-        Action:
-          - redshift:GetClusterCredentials
-          - redshift:DescribeClusters
-          - redshift-data:ExecuteStatement
-        Resource:
-          - arn:aws:redshift:eu-west-1:579154747729:dbuser:bir1-cluster/awsuser
-          - arn:aws:redshift:eu-west-1:579154747729:dbname:bir1-cluster/dev
+    # iamRoleStatements:
+    #   - Effect: 'Allow'
+    #     Action: 
+    #       - sqs:ReceiveMessage
+    #     Resource: !GetAtt testGroup3SQSTransformtoLoad.Arn
+    #   - Effect: 'Allow'
+    #     Action:
+    #       - redshift:GetClusterCredentials
+    #       - redshift:DescribeClusters
+    #       - redshift-data:ExecuteStatement
+    #     Resource:
+    #       - arn:aws:redshift:eu-west-1:579154747729:dbuser:bir1-cluster/awsuser
+    #       - arn:aws:redshift:eu-west-1:579154747729:dbname:bir1-cluster/dev
     events:
       - sqs:
           arn: !GetAtt testGroup3SQSTransformtoLoad.Arn
