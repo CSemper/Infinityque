@@ -78,15 +78,14 @@ functions:
           - s3:ListBucket
         Resource:
           - arn:aws:s3:::cafe-transactions
-          # - arn:aws:s3:::cafe-transactions/*
-      
-      # - Effect: 'Allow'
-      #   Action:
-      #     - lambda:InvokeAsync
-      #     - lambda:InvokeFunction
-      #     - lambda:GetFunction
-      #     - lambda:GetFunctionConfiguration
-      #   Resource: !GetAtt ExtractLambdaFunction.Arn
+          - arn:aws:s3:::cafe-transactions/*
+      - Effect: 'Allow'
+        Action:
+          - lambda:InvokeAsync
+          - lambda:InvokeFunction
+          - lambda:GetFunction
+          - lambda:GetFunctionConfiguration
+        Resource: !GetAtt ExtractLambdaFunction.Arn
 
   transform:
     handler: handler.start
@@ -152,16 +151,16 @@ resources:
       Properties:
         QueueName: "testGroup3SQSTransformtoLoad"
     
-    # EventInvokeConfig:
-    #   Type: "AWS::Lambda::EventInvokeConfig"
-    #   Properties:
-    #     FunctionName: !Ref ExtractLambdaFunction
-    #     #MaximumRetryAttempts: 1
-    #     DestinationConfig:
-    #       OnSuccess:
-    #         Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
-    #     Qualifier: "$LATEST"
-    #     #MaximumEventAgeInSeconds: 600
+    EventInvokeConfig:
+      Type: "AWS::Lambda::EventInvokeConfig"
+      Properties:
+        FunctionName: !Ref ExtractLambdaFunction
+        #MaximumRetryAttempts: 1
+        DestinationConfig:
+          OnSuccess:
+            Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
+        Qualifier: "$LATEST"
+        #MaximumEventAgeInSeconds: 600
     
     # group-3-test-dev-extract:
     #   Type: "AWS::Lambda::Function"
