@@ -24,7 +24,8 @@ def clean_transactions(raw_transaction_list):
             'first_name': name,
             'total': float(raw_transaction['pay_amount']),
             'payment_method': raw_transaction['payment_method'],
-            'basket': raw_transaction['basket']
+            'basket': raw_transaction['basket'],
+            'date_time': f"{clean_date} {time}"
         }
         clean_transaction_list.append(clean_transaction)
     return clean_transaction_list

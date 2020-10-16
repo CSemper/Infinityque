@@ -14,7 +14,7 @@ def start(event, context):
     for file_name in all_files:
         try:
             # Read data
-            data = read_csv_file_from_s3(bucket="group3-testbucket", key=file_name)
+            data = read_csv_file_from_s3(bucket="cafe-transactions", key=file_name)
             print('Read data from csv')
             identifier = get_key_suffix(file_name)
             print(identifier)
