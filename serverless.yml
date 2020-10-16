@@ -21,7 +21,7 @@ functions:
   extract:
     handler: handler.start
     module: extract
-    include: 
+    include:
       - extract
     iamRoleStatements:
       - Effect: 'Allow'
@@ -35,20 +35,11 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions
           - arn:aws:s3:::cafe-transactions/*
-    #   - Effect: 'Allow'
-    #     Action:
-    #       - lambda:InvokeAsync
-    #       - lambda:InvokeFunction
-    #       - lambda:GetFunction
-    #       - lambda:GetFunctionConfiguration
-    #       - lambda:PutFunctionEventInvokeConfig 
-    #     Resource: "*"
-    #     # Resource: !GetAtt ExtractLambdaFunction.Arn
 
   transform:
     handler: handler.start
     module: transform
-    include: 
+    include:
       - transform
     iamRoleStatements:
       - Effect: 'Allow'
@@ -64,7 +55,7 @@ functions:
   load:
     handler: handler.start
     module: load
-    include: 
+    include:
       - load
       - psycopg2
     iamRoleStatements:
@@ -109,15 +100,28 @@ resources:
       Properties:
         QueueName: "testGroup3SQSTransformtoLoad"
     
-    EventInvokeConfig:
+    ExtractDestination:
       Type: "AWS::Lambda::EventInvokeConfig"
       Properties:
         FunctionName: !Ref ExtractLambdaFunction
-        #MaximumRetryAttempts: 1
         DestinationConfig:
           OnSuccess:
             Destination: !GetAtt testGroup3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
-        #MaximumEventAgeInSeconds: 600
-
     
+    TransformDestination:
+      Type: "AWS::Lambda::EventInvokeConfig"
+      Properties:
+        FunctionName: !Ref TransformLambdaFunction
+        DestinationConfig:
+          OnSuccess:
+            Destination: !GetAtt testGroup3SQSTransformtoLoad.Arn
+        Qualifier: "$LATEST"
+
+    ExtractDailyTrigger:
+      Type: "AWS::Events::Rule"
+      Properties:
+        Name: "DailyTrigger"
+        ScheduleExpression: "rate(24 hours)"
+        State: "Enabled"
+        Targets: !Ref ExtractLambdaFunction
