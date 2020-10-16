@@ -85,6 +85,7 @@ functions:
           - lambda:InvokeFunction
           - lambda:GetFunction
           - lambda:GetFunctionConfiguration
+          - lambda:PutFunctionEventInvokeConfig 
         Resource: !GetAtt ExtractLambdaFunction.Arn
 
   transform:
