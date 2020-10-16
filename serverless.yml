@@ -127,3 +127,5 @@ resources:
         State: "Enabled"
         Targets: 
           - Arn: !GetAtt ExtractLambdaFunction.Arn
+            Id: ExtractDailyTrigger
+  
