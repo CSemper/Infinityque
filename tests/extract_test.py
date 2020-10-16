@@ -17,6 +17,7 @@ def test_output_raw_transactions():
     example_row_string = '29/09/2020 09:00,Isle of Wight,Paul Kifer,"Regular Luxury hot chocolate - 2.40, Regular Flavoured hot chocolate - Hazelnut - £2.60",5.00,CASH,'
     example_row_bytes = StringIO(example_row_string)
     example_csv = csv.reader(example_row_bytes)
+    example_identifier = '20-00-54'
     # Create expected class instance output
     expected_output = [{
         'date': '29/09/2020 09:00',
@@ -26,10 +27,11 @@ def test_output_raw_transactions():
         'pay_amount': '5.00',
         'payment_method': 'CASH',
         'ccn': '',
-        'id_number': 0
+        'id_number': 0,
+        'identity': '20-00-54'
     }]
     # ACT
-    actual_output = output_raw_transactions(example_csv, skip_header=False)
+    actual_output = output_raw_transactions(example_csv, identifier=example_identifier, skip_header=False)
     # ASSERT
     assert len(actual_output) == len(expected_output)
     assert actual_output == expected_output
