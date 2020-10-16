@@ -27,6 +27,8 @@ functions:
       - Effect: 'Allow'
         Action:
           - sqs:SendMessage
+          - sqs:GetQueueUrl
+          - sqs:GetQueueAttributes
         Resource: !GetAtt Group3SQSExtracttoTransform.Arn
       - Effect: 'Allow'
         Action:
@@ -47,6 +49,8 @@ functions:
           - sqs:ReceiveMessage
           - sqs:DeleteMessage
           - sqs:SendMessage
+          - sqs:GetQueueUrl
+          - sqs:GetQueueAttributes
         Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     events:
       - sqs:
