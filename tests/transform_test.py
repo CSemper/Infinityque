@@ -31,7 +31,8 @@ def test_clean_transactions():
         'first_name': 'Paul',
         'total': 5.0,
         'payment_method': 'CASH',
-        'basket': "Regular Luxury hot chocolate - 2.40, Regular Flavoured hot chocolate - Hazelnut - £2.60"
+        'basket': "Regular Luxury hot chocolate - 2.40, Regular Flavoured hot chocolate - Hazelnut - £2.60",
+        'date_time': '09-29-2020 09:00'
     }]
     # Act, assert
     assert clean_transactions(raw_transaction_input) == expected_output
