@@ -59,3 +59,8 @@ def output_raw_transactions(csv_reader, identifier, skip_header=True):
             print(line)
             continue
     return raw_transaction_list
+
+def split_long_list(listy, max_length=750):
+    '''Splits a long list into chunks of `max_length`.'''
+    return [listy[i:i+max_length]
+            for i in range(0, len(listy), max_length)]

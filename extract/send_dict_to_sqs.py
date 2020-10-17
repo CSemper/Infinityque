@@ -9,4 +9,4 @@ def send_dict_to_sqs(json_data):
         
     response = queue.send_message(QueueUrl = queue_url, MessageBody = json_data)
 
-    print(response['MessageId'])
+    print(f"Message ID = {response['MessageId']}")
