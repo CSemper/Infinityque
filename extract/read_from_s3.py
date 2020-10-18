@@ -14,10 +14,11 @@ def get_file_names():
     s3 = boto3.resource('s3')
     bucket = s3.Bucket("cafe-transactions")
     all_files = (file.key for file in bucket.objects.all())
-    file_name_start = get_key_prefix()
-    for file_name in all_files:
-        if file_name.startswith(file_name_start):
-            yield file_name
+    return all_files
+    # file_name_start = get_key_prefix()
+    # for file_name in all_files:
+    #     if file_name.startswith(file_name_start):
+    #         yield file_name
 
 def get_key_suffix(file_name):
     '''Returns last 12 characters of file name.'''
