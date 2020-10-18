@@ -43,7 +43,7 @@ def start(event, context):
     
     print('Sending transaction messages...')
     send_message_list_to_sqs(transaction_messages,
-                             queue_name=queue_url, queue_url=queue_url)
+                             queue_name=queue_name, queue_url=queue_url)
     print('Sending basket messages...')
     send_message_list_to_sqs(basket_messages,
                              queue_name=queue_name, queue_url=queue_url)
