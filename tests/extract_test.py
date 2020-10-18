@@ -8,7 +8,8 @@ Tests 2 functions:
 import csv
 from io import StringIO
 
-from extract.read_from_s3 import output_raw_transactions, split_long_list
+from extract.read_from_s3 import output_raw_transactions
+from extract.sqs_messaging import split_long_list
 
 def test_output_raw_transactions():
     '''Test `output_raw_transactions` returns list of transaction dictionaries.

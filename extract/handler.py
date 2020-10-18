@@ -5,9 +5,8 @@ import sys
 import boto3
 
 from read_from_s3 import (get_file_names, get_key_suffix,
-                          output_raw_transactions, read_csv_file_from_s3,
-                          split_long_list)
-from send_dict_to_sqs import send_dict_to_sqs
+                          output_raw_transactions, read_csv_file_from_s3)
+from sqs_messaging import send_message_list_to_sqs, split_long_list
 
 def start(event, context):
     try:
@@ -30,17 +29,12 @@ def start(event, context):
         raw_transactions = output_raw_transactions(data, identifier)
         print('Read raw transactions')
         # Split data into smaller chunks to send on SQS
-        raw_transaction_chunks = split_long_list(raw_transactions)
+        raw_transaction_chunks = split_long_list(raw_transactions, max_length=750)
         print(f'Split into {len(raw_transaction_chunks)} chunk(s)')
-        json_chunks = [json.dumps(chunk) for chunk in raw_transaction_chunks]
+        message_list = [json.dumps(chunk) for chunk in raw_transaction_chunks]
         print('Converted to JSON')
         
         # Send each json data chunk to SQS
-        for count, json_chunk in enumerate(json_chunks, start=1):
-            try:
-                send_dict_to_sqs(json_chunk)
-                print(f"SUCCESS: chunk {count}: data was sent to SQS")
-            except Exception as ERROR:
-                print(f"ERROR: chunk {count}: data was not sent to SQS")
-                print(str(ERROR))
-            
+        queue_name = 'Group3SQSExtracttoTransform'
+        queue_url = 'https://sqs.eu-west-1.amazonaws.com/579154747729/Group3SQSExtracttoTransform'
+        send_message_list_to_sqs(message_list, queue_name, queue_url)            
