@@ -10,7 +10,7 @@ import boto3
 import json
 
 from clean_data import clean_transactions, create_baskets
-from send_dict_to_sqs import send_dict_to_sqs
+from sqs_messaging import send_message_list_to_sqs, split_long_list
 
 def start(event, context):
     # Read message from SQS (list raw transactions)
@@ -25,22 +25,25 @@ def start(event, context):
     basket_list = create_baskets(clean_transaction_list)
     print('Created baskets')
 
-    # Send json data to SQS
-    transaction_data = json.dumps({
-        'transactions': clean_transaction_list
-    })
-    basket_data = json.dumps({
-        'baskets': basket_list
-    })
-    try:
-        send_dict_to_sqs(transaction_data)
-        print('Sent transaction data to SQS')
-    except Exception as ERROR:
-        print(str(ERROR))
-        print('Failed to send transaction data to SQS')
-    try:
-        send_dict_to_sqs(basket_data)
-        print('Sent basket data to SQS')
-    except Exception as ERROR:
-        print(str(ERROR))
-        print('Failed to send basket data to SQS')
+    # Split data into smaller chunks
+    transaction_chunks = split_long_list(clean_transaction_list, max_length=750)
+    print(f'Split transactions into {len(transaction_chunks)} chunk(s)')
+    basket_chunks = split_long_list(basket_list, max_length=750)
+    print(f'Split baskets into {len(basket_chunks)} chunk(s)')
+
+    # Convert data chunks to JSON strings
+    transaction_messages = [json.dumps({'transactions': chunk})
+                            for chunk in transaction_chunks]
+    basket_messages = [json.dumps({'baskets': chunk})
+                       for chunk in basket_chunks]
+
+    # Send SQS messages
+    queue_name = 'Group3SQSTransformtoLoad'
+    queue_url = 'https://sqs.eu-west-1.amazonaws.com/579154747729/Group3SQSTransformtoLoad'
+    
+    print('Sending transaction messages...')
+    send_message_list_to_sqs(transaction_messages,
+                             queue_name=queue_url, queue_url=queue_url)
+    print('Sending basket messages...')
+    send_message_list_to_sqs(basket_messages,
+                             queue_name=queue_name, queue_url=queue_url)
