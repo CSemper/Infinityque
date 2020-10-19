@@ -39,13 +39,13 @@ functions:
           - arn:aws:s3:::cafe-transactions-group-3/*
     events:
       - schedule:
-          name: 'Group3LambdaTrigger'
+          name: 'Group3DailyTrigger'
           description: 'Triggers lambda once a day at set time'
-          rate: cron(55 22 * * ? *)
+          rate: cron(55 23 * * ? *)
           enabled: true
     cron:
       active: true
-      value: '30 23 * * ? *'
+      value: '55 23 * * ? *'
     
     # events:
     #  - eventBridge:
@@ -153,7 +153,7 @@ resources:
     ExtractDailyTrigger:
       Type: "AWS::Events::Rule"
       Properties:
-        Name: "Group3LambdaTrigger"
+        Name: "Group3DailyTrigger"
         ScheduleExpression: "cron(45 23 * * ? *)"
         # ScheduleExpression: "rate(1 day)"
         State: ENABLED
