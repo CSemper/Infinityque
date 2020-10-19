@@ -39,7 +39,7 @@ functions:
           - arn:aws:s3:::cafe-transactions-group-3/*
     cron:
       active: true
-      value: '0 20 22 1/1 * ? *'
+      value: '0 30 22 1/1 * ? *'
     
     # events:
       # - events: 
