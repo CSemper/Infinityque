@@ -41,7 +41,7 @@ functions:
       - schedule:
           name: 'Group3LambdaTrigger'
           description: 'Triggers lambda once a day at set time'
-          rate: cron(0 50 22 1/1 * ? *)
+          rate: cron(55 22 * * ? *)
           enabled: true
     
     # cron:
