@@ -19,7 +19,7 @@ def start(event, context):
         print(file_name)
         try:
             # Read data
-            data = read_csv_file_from_s3(bucket="cafe-transactions", key=file_name)
+            data = read_csv_file_from_s3(bucket="cafe-transactions-group-3", key=file_name)
         except Exception as ERROR:
             print("ERROR: Couldn't read csv")
             print(str(ERROR))

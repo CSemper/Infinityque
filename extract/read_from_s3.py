@@ -12,7 +12,7 @@ def get_file_names():
     '''Yield all files in bucket that start with today's date.'''
     # List all files in bucket
     s3 = boto3.resource('s3')
-    bucket = s3.Bucket("cafe-transactions")
+    bucket = s3.Bucket("cafe-transactions-group-3")
     all_files = (file.key for file in bucket.objects.all())
     file_name_start = get_key_prefix()
     for file_name in all_files:
