@@ -35,11 +35,16 @@ functions:
           - s3:GetObject
           - s3:ListBucket
         Resource:
-          - arn:aws:s3:::cafe-transactions
-          - arn:aws:s3:::cafe-transactions/*
+          - arn:aws:s3:::cafe-transactions-group-3
+          - arn:aws:s3:::cafe-transactions-group-3/*
+    # events:
+      # - events: 
+      #     arn: !GetAtt ExtractDailyTrigger.Arn
     events:
-      - events: 
-          arn: !GetAtt ExtractDailyTrigger.Arn
+      - s3:
+          bucket: cafe-transactions-group-3
+          event: s3:ObjectCreated:Put
+          existing: true
 
   transform:
     handler: handler.start
