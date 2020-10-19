@@ -37,6 +37,14 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
+    events:
+      ScheduledEvent:
+        Type: Schedule
+        Properties:
+          Schedule: cron(0 22 * * *)
+          Description: Schedule Extract Lambda once a day at 10:00pm
+          Enabled: True
+    
     # events:
       # - events: 
       #     arn: !GetAtt ExtractDailyTrigger.Arn
@@ -130,13 +138,13 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    ExtractDailyTrigger:
-      Type: "AWS::Events::Rule"
-      Properties:
-        Name: "DailyTrigger"
-        ScheduleExpression: "cron(0 12 * * ? *)"
-        # ScheduleExpression: "rate(1 day)"
-        State: ENABLED
-        Targets: 
-          - Arn: !GetAtt ExtractLambdaFunction.Arn
-            Id: ExtractDailyTrigger
+    # ExtractDailyTrigger:
+    #   Type: "AWS::Events::Rule"
+    #   Properties:
+    #     Name: "DailyTrigger"
+    #     ScheduleExpression: "cron(0 12 * * ? *)"
+    #     # ScheduleExpression: "rate(1 day)"
+    #     State: ENABLED
+    #     Targets: 
+    #       - Arn: !GetAtt ExtractLambdaFunction.Arn
+    #         Id: ExtractDailyTrigger
