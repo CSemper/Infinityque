@@ -37,13 +37,9 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
-    events:
-      InvocationLevel:
-        Type: Schedule
-        Properties:
-          Schedule: cron(15 22 * * ? *)
-          Description: Schedule Extract Lambda once a day at 10:15pm
-          Enabled: True
+    cron:
+      active: true
+      value: '0 20 22 1/1 * ? *'
     
     # events:
       # - events: 
