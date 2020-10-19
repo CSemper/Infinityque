@@ -38,28 +38,29 @@ functions:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
     events:
-      - schedule:
-          name: 'Group3DailyTrigger'
-          description: 'Triggers lambda once a day at set time'
-          rate: cron(55 23 * * ? *)
-          enabled: true
-    cron:
-      active: true
-      value: '55 23 * * ? *'
+      - schedule: 
+          arn: !GetAtt Group3ScheduleRule.Arn
+
+   
+  #  events:
+  #     - events: 
+  #         arn: !GetAtt ExtractDailyTrigger.Arn
+
+    # events:
+    #   - schedule:
+    #       name: 'Group3DailyTrigger'
+    #       description: 'Triggers lambda once a day at set time'
+    #       rate: cron(55 23 * * ? *)
+    #       enabled: true
+    # cron:
+    #   active: true
+    #   value: '55 23 * * ? *'
     
     # events:
     #  - eventBridge:
     #      schedule: cron(20 23 * * ? *)
-
     
-    
-    # cron:
-    #   active: true
-    #   value: '0 30 22 1/1 * ? *'
-    
-    # events:
-      # - events: 
-      #     arn: !GetAtt ExtractDailyTrigger.Arn
+ 
     # events:
     #   - s3:
     #       bucket: cafe-transactions-group-3
@@ -150,13 +151,37 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    ExtractDailyTrigger:
-      Type: "AWS::Events::Rule"
-      Properties:
-        Name: "Group3DailyTrigger"
-        ScheduleExpression: "cron(45 23 * * ? *)"
-        # ScheduleExpression: "rate(1 day)"
-        State: ENABLED
+    Group3ScheduleRule:
+      Type: AWS::Events::Rule
+      Properties: 
+        Description: "ScheduledRule"
+        ScheduleExpression: "cron(35 0 * * ? *)"
+        State: "ENABLED"
         Targets: 
-          - Arn: !GetAtt ExtractLambdaFunction.Arn
-            Id: ExtractDailyTrigger
+          - 
+            Arn: 
+              Fn::GetAtt: 
+                - "ExtractLambdaFunction"
+                - "Arn"
+            Id: "TargetFunctionV1"
+    PermissionForEventsToInvokeLambda: 
+      Type: AWS::Lambda::Permission
+      Properties: 
+        FunctionName: !Ref ExtractLambdaFunction
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+        SourceArn: 
+          Fn::GetAtt: 
+            - "Group3ScheduledRule"
+            - "Arn"
+   
+    # ExtractDailyTrigger:
+    #   Type: "AWS::Events::Rule"
+    #   Properties:
+    #     Name: 'Group3LambdaTrigger'
+    #     ScheduleExpression: "cron(45 23 * * ? *)"
+    #     # ScheduleExpression: "rate(1 day)"
+    #     State: ENABLED
+    #     Targets: 
+    #       - Arn: !GetAtt ExtractLambdaFunction.Arn
+    #         Id: ExtractDailyTrigger
