@@ -37,6 +37,9 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions
           - arn:aws:s3:::cafe-transactions/*
+    events:
+      - events: 
+          arn: !GetAtt ExtractDailyTrigger
 
   transform:
     handler: handler.start
