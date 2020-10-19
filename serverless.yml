@@ -38,11 +38,14 @@ functions:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
     events:
-      - schedule:
-          name: 'Group3LambdaTrigger'
-          description: 'Triggers lambda once a day at set time'
-          rate: cron(55 22 * * ? *)
-          enabled: true
+     - eventBridge:
+         schedule: cron(20 23 * * ? *)
+
+      # - schedule:
+      #     name: 'Group3LambdaTrigger'
+      #     description: 'Triggers lambda once a day at set time'
+      #     rate: cron(55 22 * * ? *)
+      #     enabled: true
     
     # cron:
     #   active: true
