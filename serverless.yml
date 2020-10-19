@@ -37,9 +37,13 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
-    events:
-     - eventBridge:
-         schedule: cron(20 23 * * ? *)
+    cron:
+      active: true
+      value: '28 23 * * ? *'
+    
+    # events:
+    #  - eventBridge:
+    #      schedule: cron(20 23 * * ? *)
 
       # - schedule:
       #     name: 'Group3LambdaTrigger'
