@@ -40,11 +40,11 @@ functions:
     # events:
       # - events: 
       #     arn: !GetAtt ExtractDailyTrigger.Arn
-    events:
-      - s3:
-          bucket: cafe-transactions-group-3
-          event: s3:ObjectCreated:Put
-          existing: true
+    # events:
+    #   - s3:
+    #       bucket: cafe-transactions-group-3
+    #       event: s3:ObjectCreated:Put
+    #       existing: true
 
   transform:
     handler: handler.start
