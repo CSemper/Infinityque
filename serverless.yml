@@ -37,6 +37,12 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
+    events:
+      - schedule:
+          name: 'Group3LambdaTrigger'
+          description: 'Triggers lambda once a day at set time'
+          rate: cron(55 22 * * ? *)
+          enabled: true
     cron:
       active: true
       value: '30 23 * * ? *'
@@ -45,11 +51,7 @@ functions:
     #  - eventBridge:
     #      schedule: cron(20 23 * * ? *)
 
-      # - schedule:
-      #     name: 'Group3LambdaTrigger'
-      #     description: 'Triggers lambda once a day at set time'
-      #     rate: cron(55 22 * * ? *)
-      #     enabled: true
+    
     
     # cron:
     #   active: true
@@ -148,13 +150,13 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    # ExtractDailyTrigger:
-    #   Type: "AWS::Events::Rule"
-    #   Properties:
-    #     Name: "DailyTrigger"
-    #     ScheduleExpression: "cron(0 12 * * ? *)"
-    #     # ScheduleExpression: "rate(1 day)"
-    #     State: ENABLED
-    #     Targets: 
-    #       - Arn: !GetAtt ExtractLambdaFunction.Arn
-    #         Id: ExtractDailyTrigger
+    ExtractDailyTrigger:
+      Type: "AWS::Events::Rule"
+      Properties:
+        Name: "Group3LambdaTrigger"
+        ScheduleExpression: "cron(45 23 * * ? *)"
+        # ScheduleExpression: "rate(1 day)"
+        State: ENABLED
+        Targets: 
+          - Arn: !GetAtt ExtractLambdaFunction.Arn
+            Id: ExtractDailyTrigger
