@@ -39,7 +39,7 @@ functions:
           - arn:aws:s3:::cafe-transactions-group-3/*
     cron:
       active: true
-      value: '28 23 * * ? *'
+      value: '30 23 * * ? *'
     
     # events:
     #  - eventBridge:
