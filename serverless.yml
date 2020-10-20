@@ -40,6 +40,8 @@ functions:
     events:
       - schedule:
           arn: !GetAtt Group3ScheduleRule.Arn
+          rate: cron(30 12 * * ? *)
+
 
   transform:
     handler: handler.start
@@ -130,7 +132,7 @@ resources:
       Properties: 
         Description: "A daily trigger for our function"
         Name: "Group3ScheduleRule"
-        ScheduleExpression: "cron(35 0 * * ? *)"
+        ScheduleExpression: "cron(30 12 * * ? *)"
         State: "ENABLED"
         Targets: 
           - 
