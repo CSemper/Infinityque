@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 
@@ -25,10 +26,12 @@ def connect_to_redshift():
             ClusterIdentifier=cluster,
             DurationSeconds=3600) # Length of time access is granted
     except Exception as ERROR:
-        print("Credentials Issue: " + str(ERROR))
+        logging.error({
+            'Credentials Issue': str(ERROR)
+        })
         sys.exit(1)
 
-    print('Got credentials')
+    logging.info('Got credentials')
 
     # Connect to RedShift
     try:
@@ -39,7 +42,9 @@ def connect_to_redshift():
             port=port,
             host=host)
     except Exception as ERROR:
-        print("Connection Issue: " + str(ERROR))
+        logging.error({
+            'Connection Issue': str(ERROR)
+        })
         sys.exit(1)
-    print('Connected to RedShift')
+    logging.info('Connected to RedShift')
     return conn
