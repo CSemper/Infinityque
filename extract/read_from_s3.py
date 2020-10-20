@@ -1,5 +1,7 @@
 import csv
 import datetime
+import logging
+
 import boto3
 
 def get_key_prefix():
@@ -54,7 +56,10 @@ def output_raw_transactions(csv_reader, identifier, skip_header=True):
             raw_transaction_list.append(raw_transaction)
             counter += 1
         except ValueError:
-            print('Failed to read row:')
-            print(line)
+            log_message = {f'Failed to read csv row': {
+                'identifier': identifier,
+                'row': line
+            }}
+            logging.error(log_message)
             continue
     return raw_transaction_list
