@@ -37,8 +37,8 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
-      events:
-        - schedule:
+    events:
+      - schedule:
           arn: !GetAtt Group3ScheduleRule.Arn
           rate: cron(49 11 * * ? *)
 
