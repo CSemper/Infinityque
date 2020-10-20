@@ -45,7 +45,7 @@ functions:
     #       enabled: true
     #       arn: 
     events:
-      - schedule:
+      - events:
           arn: !GetAtt Group3ScheduleRule.Arn
 
   
