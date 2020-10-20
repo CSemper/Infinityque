@@ -37,6 +37,10 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
+      events:
+        - schedule:
+          arn: !GetAtt Group3ScheduleRule.Arn
+          rate: cron(49 11 * * ? *)
 
   transform:
     handler: handler.start
@@ -127,7 +131,7 @@ resources:
       Properties: 
         Description: "A daily trigger for our function"
         Name: "Group3ScheduleRule"
-        ScheduleExpression: "cron(45 12 * * ? *)"
+        ScheduleExpression: "cron(49 11 * * ? *)"
         State: "ENABLED"
         Targets: 
           - 
