@@ -37,11 +37,6 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
-    events:
-      - schedule:
-          arn: !GetAtt Group3ScheduleRule.Arn
-          rate: cron(30 12 * * ? *)
-
 
   transform:
     handler: handler.start
@@ -140,7 +135,7 @@ resources:
               Fn::GetAtt: 
                 - "ExtractLambdaFunction"
                 - "Arn"
-            Id: "TargetFunctionV1"
+            Id: "ExtractLambdaFunction"
     
     PermissionForEventsToInvokeLambda: 
       Type: AWS::Lambda::Permission
