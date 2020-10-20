@@ -37,14 +37,18 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
+    # events:
+    #   - schedule:
+    #       name: 'Group3ScheduleRule'
+    #       description: 'Triggers lambda once a day at set time'
+    #       rate: cron(45 0 * * ? *)
+    #       enabled: true
+    #       arn: 
     events:
       - schedule:
-          name: 'Group3ScheduleRule'
-          description: 'Triggers lambda once a day at set time'
-          rate: cron(45 0 * * ? *)
-          enabled: true
+          arn: !GetAtt Group3ScheduleRule.Arn
 
-   
+  
   #  events:
   #     - events: 
   #         arn: !GetAtt ExtractDailyTrigger.Arn
@@ -60,7 +64,7 @@ functions:
     #  - eventBridge:
     #      schedule: cron(20 23 * * ? *)
     
- 
+
     # events:
     #   - s3:
     #       bucket: cafe-transactions-group-3
@@ -151,19 +155,20 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    # Group3ScheduleRule:
-    #   Type: AWS::Events::Rule
-    #   Properties: 
-    #     Description: "ScheduledRule"
-    #     ScheduleExpression: "cron(35 0 * * ? *)"
-    #     State: "ENABLED"
-    #     Targets: 
-    #       - 
-    #         Arn: 
-    #           Fn::GetAtt: 
-    #             - "ExtractLambdaFunction"
-    #             - "Arn"
-    #         Id: "TargetFunctionV1"
+    Group3ScheduleRule:
+      Type: AWS::Events::Rule
+      Properties: 
+        Description: "A daily trigger for our function"
+        Name: "Group3ScheduleRule"
+        ScheduleExpression: "cron(35 0 * * ? *)"
+        State: "ENABLED"
+        Targets: 
+          - 
+            Arn: 
+              Fn::GetAtt: 
+                - "ExtractLambdaFunction"
+                - "Arn"
+            Id: "TargetFunctionV1"
     
     PermissionForEventsToInvokeLambda: 
       Type: AWS::Lambda::Permission
@@ -175,7 +180,7 @@ resources:
           Fn::GetAtt: 
             - "Group3ScheduleRule"
             - "Arn"
-   
+  
     # ExtractDailyTrigger:
     #   Type: "AWS::Events::Rule"
     #   Properties:
