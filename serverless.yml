@@ -46,7 +46,7 @@ functions:
     #       arn: 
     events:
       - events:
-          arn: !GetAtt Group3ScheduleRule.Arn
+          arn: !GetAtt Group3ScheduleRuletest.Arn
 
   
   #  events:
@@ -155,11 +155,11 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    Group3ScheduleRule:
+    Group3ScheduleRuletest:
       Type: AWS::Events::Rule
       Properties: 
         Description: "A daily trigger for our function"
-        Name: "Group3ScheduleRule"
+        Name: "Group3ScheduleRuletest"
         ScheduleExpression: "cron(35 0 * * ? *)"
         State: "ENABLED"
         Targets: 
@@ -178,7 +178,7 @@ resources:
         Principal: "events.amazonaws.com"
         SourceArn: 
           Fn::GetAtt: 
-            - "Group3ScheduleRule"
+            - "Group3ScheduleRuletest"
             - "Arn"
   
     # ExtractDailyTrigger:
