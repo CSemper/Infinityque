@@ -38,7 +38,7 @@ functions:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
     events:
-      - events:
+      - schedule:
           arn: !GetAtt Group3ScheduleRule.Arn
 
   transform:
