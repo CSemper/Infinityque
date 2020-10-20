@@ -15,19 +15,19 @@ from sqs_messaging import send_message_list_to_sqs, split_long_list
 logging.getLogger().setLevel(logging.ERROR)
 
 def start(event, context):
-    print (event)
     # Read message from SQS (list raw transactions)
     logging.info('Transform lambda start')
     raw_transactions_string = event['Records'][0]['body']
     raw_transactions = json.loads(raw_transactions_string)
     logging.info('Read raw transactions data')
     
-    print(raw_transactions_string)
-    print(raw_transactions)
-    return 
-
     # # Clean data
-    # clean_transaction_list = clean_transactions(raw_transactions)
+    try:
+        clean_transaction_list = clean_transactions(raw_transactions)
+    except Exception as ERROR:
+        print(raw_transactions)
+        print(ERROR)
+    
     # logging.info('Cleaned transactions')
     # basket_list = create_baskets(clean_transaction_list)
     # logging.info('Created baskets')
