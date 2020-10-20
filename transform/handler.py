@@ -15,37 +15,42 @@ from sqs_messaging import send_message_list_to_sqs, split_long_list
 logging.getLogger().setLevel(logging.ERROR)
 
 def start(event, context):
+    print (event)
     # Read message from SQS (list raw transactions)
     logging.info('Transform lambda start')
     raw_transactions_string = event['Records'][0]['body']
     raw_transactions = json.loads(raw_transactions_string)
     logging.info('Read raw transactions data')
-
-    # Clean data
-    clean_transaction_list = clean_transactions(raw_transactions)
-    logging.info('Cleaned transactions')
-    basket_list = create_baskets(clean_transaction_list)
-    logging.info('Created baskets')
-
-    # Split data into smaller chunks
-    transaction_chunks = split_long_list(clean_transaction_list, max_length=750)
-    logging.info(f'Split transactions into {len(transaction_chunks)} chunk(s)')
-    basket_chunks = split_long_list(basket_list, max_length=750)
-    logging.info(f'Split baskets into {len(basket_chunks)} chunk(s)')
-
-    # Convert data chunks to JSON strings
-    transaction_messages = [json.dumps({'transactions': chunk})
-                            for chunk in transaction_chunks]
-    basket_messages = [json.dumps({'baskets': chunk})
-                       for chunk in basket_chunks]
-
-    # Send SQS messages
-    queue_name = 'Group3SQSTransformtoLoad'
-    queue_url = 'https://sqs.eu-west-1.amazonaws.com/579154747729/Group3SQSTransformtoLoad'
     
-    logging.info('Sending transaction messages...')
-    send_message_list_to_sqs(transaction_messages,
-                             queue_name=queue_name, queue_url=queue_url)
-    logging.info('Sending basket messages...')
-    send_message_list_to_sqs(basket_messages,
-                             queue_name=queue_name, queue_url=queue_url)
+    print(raw_transactions_string)
+    print(raw_transactions)
+    return 
+
+    # # Clean data
+    # clean_transaction_list = clean_transactions(raw_transactions)
+    # logging.info('Cleaned transactions')
+    # basket_list = create_baskets(clean_transaction_list)
+    # logging.info('Created baskets')
+
+    # # Split data into smaller chunks
+    # transaction_chunks = split_long_list(clean_transaction_list, max_length=750)
+    # logging.info(f'Split transactions into {len(transaction_chunks)} chunk(s)')
+    # basket_chunks = split_long_list(basket_list, max_length=750)
+    # logging.info(f'Split baskets into {len(basket_chunks)} chunk(s)')
+
+    # # Convert data chunks to JSON strings
+    # transaction_messages = [json.dumps({'transactions': chunk})
+    #                         for chunk in transaction_chunks]
+    # basket_messages = [json.dumps({'baskets': chunk})
+    #                    for chunk in basket_chunks]
+
+    # # Send SQS messages
+    # queue_name = 'Group3SQSTransformtoLoad'
+    # queue_url = 'https://sqs.eu-west-1.amazonaws.com/579154747729/Group3SQSTransformtoLoad'
+    
+    # logging.info('Sending transaction messages...')
+    # send_message_list_to_sqs(transaction_messages,
+    #                          queue_name=queue_name, queue_url=queue_url)
+    # logging.info('Sending basket messages...')
+    # send_message_list_to_sqs(basket_messages,
+    #                          queue_name=queue_name, queue_url=queue_url)
