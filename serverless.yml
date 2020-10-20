@@ -164,6 +164,7 @@ resources:
                 - "ExtractLambdaFunction"
                 - "Arn"
             Id: "TargetFunctionV1"
+    
     PermissionForEventsToInvokeLambda: 
       Type: AWS::Lambda::Permission
       Properties: 
@@ -172,7 +173,7 @@ resources:
         Principal: "events.amazonaws.com"
         SourceArn: 
           Fn::GetAtt: 
-            - "Group3ScheduledRule"
+            - "Group3ScheduleRule"
             - "Arn"
    
     # ExtractDailyTrigger:
