@@ -37,39 +37,9 @@ functions:
         Resource:
           - arn:aws:s3:::cafe-transactions-group-3
           - arn:aws:s3:::cafe-transactions-group-3/*
-    # events:
-    #   - schedule:
-    #       name: 'Group3ScheduleRule'
-    #       description: 'Triggers lambda once a day at set time'
-    #       rate: cron(45 0 * * ? *)
-    #       enabled: true
-    #       arn: 
     events:
       - events:
-          arn: !GetAtt Group3ScheduleRuletest.Arn
-
-  
-  #  events:
-  #     - events: 
-  #         arn: !GetAtt ExtractDailyTrigger.Arn
-
-    # events:
-    #   - schedule:
-    #       name: 'Group3DailyTrigger'
-    #       description: 'Triggers lambda once a day at set time'
-    #       rate: cron(55 23 * * ? *)
-    #       enabled: true
-    
-    # events:
-    #  - eventBridge:
-    #      schedule: cron(20 23 * * ? *)
-    
-
-    # events:
-    #   - s3:
-    #       bucket: cafe-transactions-group-3
-    #       event: s3:ObjectCreated:Put
-    #       existing: true
+          arn: !GetAtt Group3ScheduleRule.Arn
 
   transform:
     handler: handler.start
@@ -155,11 +125,11 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    Group3ScheduleRuletest:
+    Group3ScheduleRule:
       Type: AWS::Events::Rule
       Properties: 
         Description: "A daily trigger for our function"
-        Name: "Group3ScheduleRuletest"
+        Name: "Group3ScheduleRule"
         ScheduleExpression: "cron(35 0 * * ? *)"
         State: "ENABLED"
         Targets: 
@@ -178,16 +148,5 @@ resources:
         Principal: "events.amazonaws.com"
         SourceArn: 
           Fn::GetAtt: 
-            - "Group3ScheduleRuletest"
+            - "Group3ScheduleRule"
             - "Arn"
-  
-    # ExtractDailyTrigger:
-    #   Type: "AWS::Events::Rule"
-    #   Properties:
-    #     Name: 'Group3LambdaTrigger'
-    #     ScheduleExpression: "cron(45 23 * * ? *)"
-    #     # ScheduleExpression: "rate(1 day)"
-    #     State: ENABLED
-    #     Targets: 
-    #       - Arn: !GetAtt ExtractLambdaFunction.Arn
-    #         Id: ExtractDailyTrigger
