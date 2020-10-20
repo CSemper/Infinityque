@@ -138,3 +138,6 @@ dmypy.json
 
 #Serverless file
 .serverless
+
+#Files
+duplicates.py
