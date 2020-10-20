@@ -41,7 +41,7 @@ functions:
       - schedule:
           name: 'Group3ScheduleRule'
           description: 'Triggers lambda once a day at set time'
-          rate: cron(40 0 * * ? *)
+          rate: cron(45 0 * * ? *)
           enabled: true
 
    
@@ -151,19 +151,19 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    Group3ScheduleRule:
-      Type: AWS::Events::Rule
-      Properties: 
-        Description: "ScheduledRule"
-        ScheduleExpression: "cron(35 0 * * ? *)"
-        State: "ENABLED"
-        Targets: 
-          - 
-            Arn: 
-              Fn::GetAtt: 
-                - "ExtractLambdaFunction"
-                - "Arn"
-            Id: "TargetFunctionV1"
+    # Group3ScheduleRule:
+    #   Type: AWS::Events::Rule
+    #   Properties: 
+    #     Description: "ScheduledRule"
+    #     ScheduleExpression: "cron(35 0 * * ? *)"
+    #     State: "ENABLED"
+    #     Targets: 
+    #       - 
+    #         Arn: 
+    #           Fn::GetAtt: 
+    #             - "ExtractLambdaFunction"
+    #             - "Arn"
+    #         Id: "TargetFunctionV1"
     
     PermissionForEventsToInvokeLambda: 
       Type: AWS::Lambda::Permission
