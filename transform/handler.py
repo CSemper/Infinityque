@@ -4,7 +4,7 @@
 2. Convert to a list of clean transactions and a list of baskets
 3. Send each list in an SQS message
 '''
-import json, os
+import json, logging, os
 
 import boto3
 import json
@@ -12,24 +12,26 @@ import json
 from clean_data import clean_transactions, create_baskets
 from sqs_messaging import send_message_list_to_sqs, split_long_list
 
+logging.getLogger().setLevel(logging.ERROR)
+
 def start(event, context):
     # Read message from SQS (list raw transactions)
-    print ("Transform lambda start")
+    logging.info('Transform lambda start')
     raw_transactions_string = event['Records'][0]['body']
     raw_transactions = json.loads(raw_transactions_string)
-    print('Read raw transactions data')
+    logging.info('Read raw transactions data')
 
     # Clean data
     clean_transaction_list = clean_transactions(raw_transactions)
-    print('Cleaned transactions')
+    logging.info('Cleaned transactions')
     basket_list = create_baskets(clean_transaction_list)
-    print('Created baskets')
+    logging.info('Created baskets')
 
     # Split data into smaller chunks
     transaction_chunks = split_long_list(clean_transaction_list, max_length=750)
-    print(f'Split transactions into {len(transaction_chunks)} chunk(s)')
+    logging.info(f'Split transactions into {len(transaction_chunks)} chunk(s)')
     basket_chunks = split_long_list(basket_list, max_length=750)
-    print(f'Split baskets into {len(basket_chunks)} chunk(s)')
+    logging.info(f'Split baskets into {len(basket_chunks)} chunk(s)')
 
     # Convert data chunks to JSON strings
     transaction_messages = [json.dumps({'transactions': chunk})
@@ -41,9 +43,9 @@ def start(event, context):
     queue_name = 'Group3SQSTransformtoLoad'
     queue_url = 'https://sqs.eu-west-1.amazonaws.com/579154747729/Group3SQSTransformtoLoad'
     
-    print('Sending transaction messages...')
+    logging.info('Sending transaction messages...')
     send_message_list_to_sqs(transaction_messages,
                              queue_name=queue_name, queue_url=queue_url)
-    print('Sending basket messages...')
+    logging.info('Sending basket messages...')
     send_message_list_to_sqs(basket_messages,
                              queue_name=queue_name, queue_url=queue_url)

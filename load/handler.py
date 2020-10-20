@@ -1,9 +1,11 @@
 import json
+import logging
 
 import boto3
 import psycopg2.extras
 from connect_to_redshift import connect_to_redshift
 
+logging.getLogger().setLevel(logging.ERROR)
 
 def start(event, context):
     # Read data from SQS
@@ -13,11 +15,15 @@ def start(event, context):
     if 'transactions' in data:
         data_is_transactions = True
         transaction_list = data['transactions']
-        print(transaction_list)
+        logging.info({'Transaction list': {
+            'first_row': transaction_list[0]
+        }})
     else:
         data_is_transactions = False
         basket_list = data['baskets']
-        print(basket_list)
+        logging.info({'Basket list':{
+            'first_row': basket_list[0]
+        }})
 
     # Connect to redshift
     conn = connect_to_redshift()
@@ -39,7 +45,7 @@ def start(event, context):
                 transaction['date_time']
             ) for transaction in transaction_list])
             conn.commit()
-        print('Transactions written to database')
+            logging.info('Transactions written to database')
     else:
         # If SQS message contained baskets, write baskets...
         with conn.cursor() as cursor:
@@ -53,6 +59,6 @@ def start(event, context):
                 basket['cost']
             ) for basket in basket_list])
             conn.commit()
-        print('Baskets written to database')
+            logging.info('Baskets written to database')
     conn.close()
-    print('Closed connection')
+    logging.info('Closed connection')
