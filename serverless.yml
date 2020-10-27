@@ -155,7 +155,7 @@ resources:
     KinesisDestination:
       Type: "AWS::Lambda::EventInvokeConfig"
       Properties:
-        FunctionName: !Ref extractKinesis
+        FunctionName: !Ref ExtractKinesisLambdaFunction
         DestinationConfig:
           OnSuccess:
             Destination: !GetAtt Group3SQSKinesistoTransorm.Arn
