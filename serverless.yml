@@ -60,6 +60,19 @@ functions:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
 
+  extractKinesis:
+    handler: handler.start
+    module: kinesislambda
+    include:
+      - kinesislambda
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - sqs:SendMessage
+          - sqs:GetQueueUrl
+          - sqs:GetQueueAttributes
+        Resource: !GetAtt Group3SQSExtracttoTransform.Arn
+
   load:
     handler: handler.start
     module: load
@@ -124,6 +137,15 @@ resources:
         DestinationConfig:
           OnSuccess:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
+        Qualifier: "$LATEST"
+
+    KinesisDestination:
+      Type: "AWS::Lambda::EventInvokeConfig"
+      Properties:
+        FunctionName: !Ref extractKinesis
+        DestinationConfig:
+          OnSuccess:
+            Destination: !GetAtt Group3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
 
     Group3ScheduleRule:
