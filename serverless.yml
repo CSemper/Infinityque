@@ -140,7 +140,7 @@ resources:
         FunctionName: !Ref ExtractLambdaFunction
         DestinationConfig:
           OnSuccess:
-            Destination: !GetAtt Group3SQSKinesistoTransorm.Arn
+            Destination: !GetAtt Group3SQSExtracttoTransform.Arn
         Qualifier: "$LATEST"
     
     TransformDestination:
