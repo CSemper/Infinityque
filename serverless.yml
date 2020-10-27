@@ -77,7 +77,7 @@ functions:
           - sqs:SendMessage
           - sqs:GetQueueUrl
           - sqs:GetQueueAttributes
-        Resource: !GetAtt Group3SQSExtracttoTransform.Arn
+        Resource: !GetAtt Group3SQSKinesistoTransorm.Arn
 
   load:
     handler: handler.start
@@ -140,7 +140,7 @@ resources:
         FunctionName: !Ref ExtractLambdaFunction
         DestinationConfig:
           OnSuccess:
-            Destination: !GetAtt Group3SQSExtracttoTransform.Arn
+            Destination: !GetAtt Group3SQSKinesistoTransorm.Arn
         Qualifier: "$LATEST"
     
     TransformDestination:
