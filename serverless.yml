@@ -128,7 +128,12 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSTransformtoLoad"
-    
+
+    Group3SQSKinesistoTransorm:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3SQSKinesistoTransorm"
+
     ExtractDestination:
       Type: "AWS::Lambda::EventInvokeConfig"
       Properties:
@@ -147,14 +152,14 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    # KinesisDestination:
-    #   Type: "AWS::Lambda::EventInvokeConfig"
-    #   Properties:
-    #     FunctionName: !Ref extractKinesis
-    #     DestinationConfig:
-    #       OnSuccess:
-    #         Destination: !GetAtt Group3SQSExtracttoTransform.Arn
-    #     Qualifier: "$LATEST"
+    KinesisDestination:
+      Type: "AWS::Lambda::EventInvokeConfig"
+      Properties:
+        FunctionName: !Ref extractKinesis
+        DestinationConfig:
+          OnSuccess:
+            Destination: !GetAtt Group3SQSKinesistoTransorm.Arn
+        Qualifier: "$LATEST"
 
     Group3ScheduleRule:
       Type: AWS::Events::Rule
