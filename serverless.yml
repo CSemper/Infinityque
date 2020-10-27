@@ -64,20 +64,20 @@ functions:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
 
-  extractKinesis:
-    handler: handler.start
-    module: kinesislambda
-    include:
-      - kinesislambda
-    # timeout: 6
-    # memorySize: 1024
-    iamRoleStatements:
-      - Effect: 'Allow'
-        Action:
-          - sqs:SendMessage
-          - sqs:GetQueueUrl
-          - sqs:GetQueueAttributes
-        Resource: !GetAtt Group3SQSKinesistoTransorm.Arn
+  # extractKinesis:
+  #   handler: handler.start
+  #   module: kinesislambda
+  #   include:
+  #     - kinesislambda
+  #   # timeout: 6
+  #   # memorySize: 1024
+  #   iamRoleStatements:
+  #     - Effect: 'Allow'
+  #       Action:
+  #         - sqs:SendMessage
+  #         - sqs:GetQueueUrl
+  #         - sqs:GetQueueAttributes
+  #       Resource: !GetAtt Group3SQSKinesistoTransorm.Arn
 
   load:
     handler: handler.start
