@@ -23,6 +23,8 @@ functions:
     module: extract
     include:
       - extract
+    timeout: 30
+    memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -47,6 +49,8 @@ functions:
     module: transform
     include:
       - transform
+    timeout: 126
+    memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -65,6 +69,8 @@ functions:
     module: kinesislambda
     include:
       - kinesislambda
+    timeout: 6
+    memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -79,6 +85,8 @@ functions:
     include:
       - load
       - psycopg2
+    timeout: 30
+    memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
         Action: 
@@ -139,14 +147,14 @@ resources:
             Destination: !GetAtt Group3SQSTransformtoLoad.Arn
         Qualifier: "$LATEST"
 
-    KinesisDestination:
-      Type: "AWS::Lambda::EventInvokeConfig"
-      Properties:
-        FunctionName: !Ref extractKinesis
-        DestinationConfig:
-          OnSuccess:
-            Destination: !GetAtt Group3SQSExtracttoTransform.Arn
-        Qualifier: "$LATEST"
+    # KinesisDestination:
+    #   Type: "AWS::Lambda::EventInvokeConfig"
+    #   Properties:
+    #     FunctionName: !Ref extractKinesis
+    #     DestinationConfig:
+    #       OnSuccess:
+    #         Destination: !GetAtt Group3SQSExtracttoTransform.Arn
+    #     Qualifier: "$LATEST"
 
     Group3ScheduleRule:
       Type: AWS::Events::Rule
