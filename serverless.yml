@@ -23,7 +23,7 @@ functions:
     module: extract
     include:
       - extract
-    # timeout: 30
+    timeout: 30
     # memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
@@ -49,7 +49,7 @@ functions:
     module: transform
     include:
       - transform
-    # timeout: 126
+    timeout: 126
     # memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
@@ -85,7 +85,7 @@ functions:
     include:
       - load
       - psycopg2
-    # timeout: 30
+    timeout: 30
     # memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
