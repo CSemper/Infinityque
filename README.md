@@ -1,10 +1,10 @@
-# Infinity Customer Tracker App 2000 :exclamation:
-## 100 locations, 1 Infinity Customer Tracker ![Deploy main branch](https://github.com/data-engineering-bir-1/team-3-project/workflows/Deploy%20main%20branch/badge.svg)
+# Infinity-que :exclamation:
+## 200 locations, 1 Infinity-que ![Deploy main branch](https://github.com/data-engineering-bir-1/team-3-project/workflows/Deploy%20main%20branch/badge.svg)
 
 ### _Description_:  
 <img align="right" img src="https://user-images.githubusercontent.com/70574102/96183200-77567880-0f2e-11eb-8eff-e6121a86e790.png" width="150" height="150" />
 
-The **Infinity Customer Tracker App 2000** is a solution-based application designed for Infinty Cafe's franchise managers located all around the UK. Unlike the
+The **Infinity-que App** is a solution-based application designed for Infinty Cafe's franchise managers located all around the UK. Unlike the
 previous CSV back-up system, this serverless application allows managers to:  
 1. Access real data from over 100 cafe locations;  
 2. Identify local and regional customer trends;  
