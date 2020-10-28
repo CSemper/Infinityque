@@ -135,6 +135,8 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSKinesistoTransorm"
+        VisibilityTimeout: 200
+
 
     ExtractDestination:
       Type: "AWS::Lambda::EventInvokeConfig"
