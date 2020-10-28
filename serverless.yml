@@ -72,7 +72,7 @@ functions:
     events:
       - schedule:
           arn: !GetAtt Group3KinesisScheduleRule.Arn
-          rate: cron(25 22 * * ? *)
+          rate: cron(35 22 * * ? *)
 
   transform:
     handler: handler.start
@@ -218,7 +218,7 @@ resources:
       Properties: 
         Description: "A daily trigger for our kinesis function"
         Name: "Group3KinesisScheduleRule"
-        ScheduleExpression: "cron(25 22 * * ? *)"
+        ScheduleExpression: "cron(35 22 * * ? *)"
         State: "ENABLED"
         Targets: 
           - 
@@ -228,7 +228,7 @@ resources:
                 - "Arn"
             Id: "ExtractKinesisLambdaFunction"
 
-    PermissionForEventsToInvokeLambda: 
+    PermissionForEventsToInvokeKinesisLambda: 
       Type: AWS::Lambda::Permission
       Properties: 
         FunctionName: !Ref ExtractKinesisLambdaFunction
