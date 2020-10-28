@@ -45,7 +45,16 @@ The Python Package *psycopg2* is used to load this transformed data to a relatio
 ### _Tests_:
 <img align="right" img src="https://user-images.githubusercontent.com/70574102/96183671-1da27e00-0f2f-11eb-8ae0-921d8553e5f3.png" width="150" height="150" />
 
-(To be updated with info on what tests are included and sample code)
+Comprehensive test suite for extract and transform modules runs in under a
+second. Easy to run with `pytest` command:
+
+```bash
+$ cd team-3-project
+$ pytest
+```
+
+<img src="https://i.imgur.com/dpqx4AZ.png" width="580;" alt="pytest terminal output"/>
+
 
 <br/> 
 <br/> 
