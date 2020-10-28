@@ -78,7 +78,7 @@ functions:
     events:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
-      - sqs:
+      - sqs2:
           arn: !GetAtt Group3SQSKinesistoTransorm.Arn
   
   load:
