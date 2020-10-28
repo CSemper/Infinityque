@@ -49,7 +49,7 @@ functions:
     module: kinesislambda
     include:
       - kinesislambda
-    timeout: 6
+    timeout: 30
     memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
@@ -72,7 +72,7 @@ functions:
     events:
       - schedule:
           arn: !GetAtt Group3KinesisScheduleRule.Arn
-          rate: cron(35 22 * * ? *)
+          rate: cron(50 22 * * ? *)
 
   transform:
     handler: handler.start
@@ -218,7 +218,7 @@ resources:
       Properties: 
         Description: "A daily trigger for our kinesis function"
         Name: "Group3KinesisScheduleRule"
-        ScheduleExpression: "cron(35 22 * * ? *)"
+        ScheduleExpression: "cron(50 22 * * ? *)"
         State: "ENABLED"
         Targets: 
           - 

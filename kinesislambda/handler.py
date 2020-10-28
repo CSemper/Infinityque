@@ -3,7 +3,7 @@ import boto3
 
 from sqs_messaging import send_message_list_to_sqs, split_long_list
 
-logging.getLogger().setLevel(logging.ERROR)
+# logging.getLogger().setLevel(logging.ERROR)
 
 def start(event, context):
     stream_name = 'store-stream'
@@ -12,7 +12,7 @@ def start(event, context):
     shard_id = response['StreamDescription']['Shards'][0]['ShardId']
     shard_iterator = kinesis_client.get_shard_iterator(StreamName=stream_name,
                                                       ShardId=shard_id,
-                                                      ShardIteratorType='LATEST')
+                                                      ShardIteratorType='TRIM_HORIZON')
 
     kinesis_shard_iterator = shard_iterator['ShardIterator']
 
@@ -21,10 +21,9 @@ def start(event, context):
     # while 'NextShardIterator' in record_response:
     #     # read up to 100 records at a time from the shard number
     record_response = kinesis_client.get_records(ShardIterator=record_response['NextShardIterator'],Limit=5)
-    if(record_response['Records']):
-        print (record_response['Records'])
-        print ("Okay")
-        print (record_response['Records']['Data'])
+    print (record_response['Records'])
+    print ("Okay")
+    print (record_response['Records']['Data'])
         
 # # wait for 1 seconds before looping back around to see if there is any more data to read
 # time.sleep(1)
