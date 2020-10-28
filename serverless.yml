@@ -76,9 +76,9 @@ functions:
           - sqs:GetQueueAttributes
         Resource: !GetAtt Group3SQSTransformtoLoad.Arn
     events:
-      - sqs:
+      - sqs1:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
-      - sqs:
+      - sqs2:
           arn: !GetAtt Group3SQSKinesistoTransorm.Arn
   
   load:
