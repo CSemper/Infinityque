@@ -18,27 +18,12 @@ def start(event, context):
 
     record_response = kinesis_client.get_records(ShardIterator=kinesis_shard_iterator,Limit=5)
  
-    # while 'NextShardIterator' in record_response:
-    #     # read up to 100 records at a time from the shard number
-    record_response = kinesis_client.get_records(ShardIterator=record_response['NextShardIterator'],Limit=5)
-    print (record_response['Records'])
-    print ("Okay")
-    print (record_response['Records']['Data'])
-        
-# # wait for 1 seconds before looping back around to see if there is any more data to read
-# time.sleep(1)
+    while 'NextShardIterator' in record_response:
+        # read a certain number of records at a time from the shard number
+        record_response = kinesis_client.get_records(ShardIterator=record_response['NextShardIterator'],Limit=5)
+        print (record_response['Records'])
+        print ("Okay")
+        print (record_response['Records'][0]['Data'])
+        # time.sleep(1) - sleep before continuing while loop
         
         
-# for line in csv_reader:
-#         try:
-#             raw_transaction = {
-#                 'date': line[0],
-#                 'location': line[1],
-#                 'customer_name': line[2],
-#                 'basket': line[3],
-#                 'pay_amount': line[4],
-#                 'payment_method': line[5],
-#                 'ccn': line[6],
-#                 'id_number': counter,
-#                 'identity': identifier
-#             }
