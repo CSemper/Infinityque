@@ -58,6 +58,17 @@ functions:
           - sqs:GetQueueUrl
           - sqs:GetQueueAttributes
         Resource: !GetAtt Group3SQSKinesistoTransorm.Arn
+      - Effect: 'Allow'
+        Action:
+          - kinesis:DescribeStream
+          - kinesis:DescribeStreamSummary
+          - kinesis:GetRecords
+          - kinesis:GetShardIterator
+          - kinesis:ListShards
+          - kinesis:ListStreams
+          - kinesis:SubscribeToShard
+        Resource:
+          - arn:aws:kinesis:eu-west-1:579154747729:stream/store-stream
 
   transform:
     handler: handler.start
