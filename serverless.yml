@@ -69,6 +69,10 @@ functions:
           - kinesis:SubscribeToShard
         Resource:
           - arn:aws:kinesis:eu-west-1:579154747729:stream/store-stream
+    events:
+      - schedule:
+          arn: !GetAtt Group3KinesisScheduleRule.Arn
+          rate: cron(25 22 * * ? *)
 
   transform:
     handler: handler.start
@@ -156,7 +160,6 @@ resources:
         QueueName: "Group3SQSKinesistoTransorm"
         VisibilityTimeout: 200
 
-
     ExtractDestination:
       Type: "AWS::Lambda::EventInvokeConfig"
       Properties:
@@ -184,7 +187,6 @@ resources:
             Destination: !GetAtt Group3SQSKinesistoTransorm.Arn
         Qualifier: "$LATEST"
 
-
     Group3ScheduleRule:
       Type: AWS::Events::Rule
       Properties: 
@@ -209,4 +211,30 @@ resources:
         SourceArn: 
           Fn::GetAtt: 
             - "Group3ScheduleRule"
+            - "Arn"
+      
+    Group3KinesisScheduleRule:
+      Type: AWS::Events::Rule
+      Properties: 
+        Description: "A daily trigger for our kinesis function"
+        Name: "Group3KinesisScheduleRule"
+        ScheduleExpression: "cron(25 22 * * ? *)"
+        State: "ENABLED"
+        Targets: 
+          - 
+            Arn: 
+              Fn::GetAtt: 
+                - "ExtractKinesisLambdaFunction"
+                - "Arn"
+            Id: "ExtractKinesisLambdaFunction"
+
+    PermissionForEventsToInvokeLambda: 
+      Type: AWS::Lambda::Permission
+      Properties: 
+        FunctionName: !Ref ExtractKinesisLambdaFunction
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+        SourceArn: 
+          Fn::GetAtt: 
+            - "Group3KinesisScheduleRule"
             - "Arn"
