@@ -130,6 +130,14 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "Group3SQSTransformtoLoad"
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt TransformtoLoadDLQ.Arn
+          maxReceiveCount: 2
+
+    TransformtoLoadDLQ:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "Group3-DeadLetterQueue"
 
     Group3SQSKinesistoTransorm:
       Type: "AWS::SQS::Queue"
@@ -164,6 +172,7 @@ resources:
           OnSuccess:
             Destination: !GetAtt Group3SQSKinesistoTransorm.Arn
         Qualifier: "$LATEST"
+
 
     Group3ScheduleRule:
       Type: AWS::Events::Rule
