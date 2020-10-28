@@ -49,7 +49,7 @@ functions:
     module: kinesislambda
     include:
       - kinesislambda
-    # timeout: 6
+    timeout: 6
     # memorySize: 1024
     iamRoleStatements:
       - Effect: 'Allow'
@@ -78,7 +78,7 @@ functions:
     events:
       - sqs:
           arn: !GetAtt Group3SQSExtracttoTransform.Arn
-      - sqs2:
+      - sqs:
           arn: !GetAtt Group3SQSKinesistoTransorm.Arn
   
   load:
