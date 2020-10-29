@@ -19,9 +19,9 @@ def start(event, context):
 
     kinesis_shard_iterator = shard_iterator['ShardIterator']
 
-    record_response = kinesis_client.get_records(ShardIterator=kinesis_shard_iterator,Limit=5)
+    record_response = kinesis_client.get_records(ShardIterator=kinesis_shard_iterator,Limit=1000)
  
-    record_response = kinesis_client.get_records(ShardIterator=record_response['NextShardIterator'],Limit=5)
+    record_response = kinesis_client.get_records(ShardIterator=record_response['NextShardIterator'],Limit=1000)
     # Get data from kinesis stream
     try:
         kinesis_stream = event['Records']

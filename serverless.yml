@@ -72,7 +72,7 @@ functions:
     events:
       - schedule:
             arn: !GetAtt Group3ScheduleRule.Arn
-            rate: cron(27 11 * * ? *)
+            rate: cron(47 11 * * ? *)
       # - stream:
       #     type: kinesis
       #     arn: arn:aws:kinesis:eu-west-1:579154747729:stream/store-stream
@@ -224,7 +224,7 @@ resources:
       Properties: 
         Description: "A daily trigger for our kinesis function"
         Name: "Group3KinesisScheduleRule"
-        ScheduleExpression: "cron(27 11 * * ? *)"
+        ScheduleExpression: "cron(47 11 * * ? *)"
         State: "ENABLED"
         Targets: 
           - 
