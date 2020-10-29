@@ -28,7 +28,7 @@ def start(event, context):
         logging.info({'event': kinesis_stream})
     except Exception as ERROR:
         logging.error({'event[Records] not found': event})
-    kinesis_stream = record_response
+    kinesis_stream = record_response['Records']
     
     counter = 0
     for data_record in kinesis_stream:
