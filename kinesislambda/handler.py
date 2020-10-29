@@ -58,8 +58,8 @@ def start(event, context):
         # Convert dictionary to json list
         message = json.dumps([raw_transaction])
         # Send row SQS
-        queue_name = 'Group3SQSExtracttoTransform'
-        queue_url = 'https://sqs.eu-west-1.amazonaws.com/579154747729/Group3SQSExtracttoTransform'
+        queue_name = 'Group3SQSKinesistoTransorm'
+        queue_url = 'https://sqs.eu-west-1.amazonaws.com/579154747729/Group3SQSKinesistoTransorm'
         try:
             send_sqs_message(
                 message,
