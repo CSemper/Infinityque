@@ -71,8 +71,14 @@ functions:
           - arn:aws:kinesis:eu-west-1:579154747729:stream/store-stream
     events:
       - schedule:
-          arn: !GetAtt Group3KinesisScheduleRule.Arn
-          rate: cron(30 23 * * ? *)
+            arn: !GetAtt Group3ScheduleRule.Arn
+            rate: cron(00 11 * * ? *)
+      # - stream:
+      #     type: kinesis
+      #     arn: arn:aws:kinesis:eu-west-1:579154747729:stream/store-stream
+      #     batchSize: 1
+      #     maximumRetryAttempts: 2
+      #     enabled: true
 
   transform:
     handler: handler.start
@@ -212,13 +218,13 @@ resources:
           Fn::GetAtt: 
             - "Group3ScheduleRule"
             - "Arn"
-      
+
     Group3KinesisScheduleRule:
       Type: AWS::Events::Rule
       Properties: 
         Description: "A daily trigger for our kinesis function"
         Name: "Group3KinesisScheduleRule"
-        ScheduleExpression: "cron(30 23 * * ? *)"
+        ScheduleExpression: "cron(00 11 * * ? *)"
         State: "ENABLED"
         Targets: 
           - 
