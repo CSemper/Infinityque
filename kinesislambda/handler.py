@@ -8,28 +8,8 @@ from sqs_messaging import send_sqs_message
 logging.getLogger().setLevel(logging.INFO)
 
 def start(event, context):
-    # Remove this code!!!
-    stream_name = 'store-stream'
-    kinesis_client = boto3.client('kinesis', region_name='eu-west-1')
-    response = kinesis_client.describe_stream(StreamName=stream_name)
-    shard_id = response['StreamDescription']['Shards'][0]['ShardId']
-    shard_iterator = kinesis_client.get_shard_iterator(StreamName=stream_name,
-                                                      ShardId=shard_id,
-                                                      ShardIteratorType='TRIM_HORIZON')
-
-    kinesis_shard_iterator = shard_iterator['ShardIterator']
-
-    record_response = kinesis_client.get_records(ShardIterator=kinesis_shard_iterator,Limit=1000)
- 
-    record_response = kinesis_client.get_records(ShardIterator=record_response['NextShardIterator'],Limit=1000)
-    # Get data from kinesis stream
-    try:
-        kinesis_stream = event['Records']
-        logging.info({'event': kinesis_stream})
-    except Exception as ERROR:
-        logging.error({'event[Records] not found': event})
-    kinesis_stream = record_response['Records']
-    
+    # Get data stream
+    kinesis_stream = event['Records']
     counter = 0
     for data_record in kinesis_stream:
         # Convert binary string to python list
